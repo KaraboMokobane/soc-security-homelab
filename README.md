@@ -328,44 +328,6 @@ soc-security-homelab/
 
 ---
 
-## Deployment
-
-The portfolio is a static application and can be deployed without a build process.
-
-### Vercel
-
-The repository can be imported directly into Vercel.
-
-No framework preset or build command is required.
-
-The included `vercel.json` provides routing and response-header configuration.
-
-### GitHub Pages
-
-The project can also be hosted directly using GitHub Pages from the repository's main branch.
-
----
-
-## Security and Privacy
-
-Screenshots and documentation published in this repository are sanitized before publication.
-
-Sensitive information such as the following should never be committed:
-
-* Passwords
-* API keys
-* Authentication tokens
-* Private keys
-* Session cookies
-* Personal information
-* Public-facing credentials
-* Sensitive infrastructure identifiers
-* Secrets contained in configuration files
-
-Private infrastructure details may also be generalized where exposing them would provide no educational value.
-
----
-
 ## Project Goals
 
 The Cyberlab is built around three primary objectives:
