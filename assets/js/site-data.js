@@ -319,7 +319,7 @@ about: {
                 {
                   src: "assets/images/Screenshot 2026-07-08 002045v.png",
                   alt: "Proxmox Node 2 configuration and hosted containers",
-                  caption: "Node 2: Separate Proxmox environment on 10.20.1.0/24, protected by OPNsense and used for isolated testing, containers, and expanded security services."
+                  caption: "Portainer is used to manage containerized vulnerable web applications deployed for controlled security testing, exploitation practice, and detection validation within the isolated lab environment."
                 }
       ]
     },
