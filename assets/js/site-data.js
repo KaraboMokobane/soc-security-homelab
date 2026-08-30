@@ -286,14 +286,14 @@ about: {
 
       images: [
                 {
-                  src: "assets/images/node1config.png",
+                  src: "assets/images/topology.png",
                   alt: "Proxmox Cluster configuration and hosted virtual machines",
                   caption: "Node 1: Core Proxmox environment on 10.10.1.0/24, protected by pfSense and hosting the primary lab services across VLANs 10, 20, and 30."
                 },
                 {
                   src: "assets/images/Screenshot 2026-08-11 080159.png",
                   alt: "Proxmox Node 2 configuration and hosted containers",
-                  caption: "Node 2: Separate Proxmox environment on 10.20.1.0/24, protected by OPNsense and used for isolated testing, containers, and expanded security services."
+                  caption: "Node 2: Separate Proxmox environment on 10.20.1.0/24, protected by OPNsense and used for isolated testing, containers, and expanded security services. Node is not working splease see logs @Proxmox Cluster Operations"
                 }
               ]
     },
