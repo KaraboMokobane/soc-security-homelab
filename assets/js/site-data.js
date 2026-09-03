@@ -238,6 +238,72 @@ about: {
           ]
     },
 
+{
+  id: "google-data-analysis",
+  category: "Research",
+  status: "in progress",
+  featured: false,
+
+  title: "Analysing My Google Digital Footprint",
+  date: "2026-08-10",
+
+  tags: [
+    "Google Takeout",
+    "Digital Footprint",
+    "Privacy",
+    "Data Analysis",
+    "OSINT",
+    "Personal Data"
+  ],
+
+  tools: [
+    "Google Takeout",
+    "Google My Activity",
+    "JSON",
+    "HTML",
+    "Data Analysis"
+  ],
+
+  summary:
+    "Downloaded and reviewed data associated with my Google account, created in 2014, to understand how more than a decade of searches and online activity can build a detailed personal digital footprint.",
+
+  findings: [
+    "A Google account used for more than a decade can accumulate a surprisingly detailed record of online activity.",
+    "Search history can reveal changing interests, habits and priorities across different stages of life.",
+    "Some of my earliest searches reflected my teenage interests, including MXit, kickflips, hardflips, Rodney Mullen and 3Square Skate Park.",
+    "The timestamps made the history feel much more personal, with some early skateboarding searches recorded on a Saturday at around 11:23.",
+    "Individual searches may seem insignificant, but years of activity viewed together can reveal a much broader picture of a person's interests and behaviour.",
+    "The exercise highlighted how much historical information can remain associated with an online account long after the user has forgotten about it."
+  ],
+
+  lessons: [
+    "Learned how to export and inspect personal account data using Google Takeout.",
+    "Developed a better understanding of how digital footprints are created over long periods of time.",
+    "Learned how timestamps and search history can be used to reconstruct past interests and behaviour.",
+    "Recognised the difference between information I remember sharing and information that accumulated passively through normal online activity.",
+    "Improved my awareness of data retention, privacy controls and account activity history.",
+    "Plan to analyse the dataset further and create visualisations showing how my interests and online activity changed over time."
+  ],
+
+  body: [
+    "I created my Google account in 2014, so I decided to download and review the data associated with it to understand what more than a decade of normal online activity could reveal about me.",
+
+    "Using Google Takeout and Google My Activity, I started going through historical searches and account activity. It was interesting, nostalgic and slightly unsettling to see how much information had accumulated from searches that I had completely forgotten about.",
+
+    "Two themes stood out in my earliest Google searches: MXit and skateboarding. My skating searches included kickflips, hardflips, Rodney Mullen and 3Square Skate Park. At the time I was around 14 and was trying to understand how professional skaters landed these tricks so I could attempt them myself.",
+
+    "What made the history even more interesting was the level of detail preserved with it. Some of those skating searches were made on a Saturday at around 11:23. More than a decade later, that timestamp made it surprisingly easy to imagine what I was probably doing that morning: watching skate videos, researching tricks and planning what I wanted to try next.",
+
+    "Looking through these searches was funny because MXit, skating and searching for trick tutorials felt completely ordinary at the time. I never considered that those small interactions would still exist years later and form part of a timeline showing what I was interested in as a teenager.",
+
+    "The biggest privacy lesson was that a digital footprint is not necessarily created by one sensitive search or one major event. It builds gradually. When thousands of ordinary searches, timestamps and interactions are viewed together, they can reveal patterns about interests, habits and how a person changes over time.",
+
+    "The next phase of this research is to analyse the exported data more systematically, including search activity by year, recurring topics and changes in interests over time. I also plan to create visualisations that show how my Google activity evolved from my teenage years into university, technology, cybersecurity and professional interests."
+  ],
+
+  images: []
+},
+
     {
       id: "homelab-day-01", category: "Homelab", status: "documented", featured: true,
       title: "Homelab Day 1 — Foundation and Network Segmentation", date: "2026-07-08",
