@@ -688,71 +688,7 @@ about: {
 
   images: []
 },
-
-{
-  id: "google-data-analysis",
-  category: "Research",
-  status: "Documented",
-  featured: false,
-
-  title: "Analysing My Google Digital Footprint",
-  date: "2026-08-10",
-
-  tags: [
-
-    "Google Takeout",
-    "Digital Footprint",
-    "Privacy",
-    "Data Analysis",
-    "OSINT",
-    "Personal Data"
-  ],
-
-  tools: [
-    "Google Takeout",
-    "Google My Activity",
-    "JSON",
-    "HTML",
-    "Data Analysis"
-  ],
-
-  summary:
-    "Downloaded and reviewed data associated with a Google account created in 2014 to understand how years of searches, activity and online behaviour can build a detailed personal digital footprint.",
-
-  findings: [
-    "A Google account used for more than a decade can accumulate a significant historical record of online activity.",
-    "Search history can reveal changing interests, priorities and behaviour across different stages of life.",
-    "My earliest recorded search was \"[FIRST RECORDED SEARCH]\", which was particularly funny to discover because I was still a teenager at the time.",
-    "Individual searches may appear insignificant, but years of activity combined can reveal much more context about a person.",
-    "Reviewing my own data demonstrated the difference between information I consciously remember sharing and information that has accumulated through normal online activity.",
-    "The exercise highlighted why account privacy settings, retention controls and periodic data reviews are important."
-  ],
-
-  lessons: [
-    "Learned how to export and inspect personal account data using Google Takeout.",
-    "Developed a better understanding of how digital footprints build over long periods of time.",
-    "Learned to think about personal data from both a privacy and security perspective.",
-    "Recognised how behavioural data can become meaningful when analysed collectively rather than as isolated events.",
-    "Improved my awareness of data retention and the importance of reviewing privacy settings.",
-    "Plan to visualise the dataset to identify trends in searches and activity over time."
-  ],
-
-  body: [
-    "I created my Google account in 2014, so I decided to download my Google data and investigate what more than a decade of normal online activity could reveal about me.",
-
-    "Using Google Takeout and My Activity, I began reviewing historical searches and other activity associated with the account. It was interesting, but also slightly uncomfortable, to see how much context can be reconstructed simply from years of searches and interactions.",
-
-    "Two themes stood out in my earliest Google searches: MXit and skateboarding. My skating searches included kickflips, hardflips, Rodney Mullen and 3Square Skate Park. Some of them were made on a Saturday at around 11:23, which made the history feel strangely specific — I could almost picture 14-year-old me spending the weekend watching professional skaters and trying to figure out how to land the same tricks myself.",
-    "Seeing those ordinary searches still associated with my account more than a decade later was funny and nostalgic, but also slightly unsettling. What felt like forgettable moments at the time had quietly become part of a detailed digital timeline of who I was and what I was interested in.",
-
-    "More importantly, the exercise demonstrated that a digital footprint is not necessarily created by one particularly sensitive piece of information. It develops gradually. Searches that seem meaningless individually can collectively reveal interests, hobbies, concerns, places, technology use and how someone's priorities change over time.",
-
-    "The project also changed how I think about privacy. Having access to my own historical data made data retention feel much more tangible than simply reading about it. The next stage is to analyse the exported information further and create visualisations showing how my Google activity has changed over time."
-  ],
-
-  images: []
-},
-
+    
 {
   id: "shodan-research-journal",
   category: "Research",
