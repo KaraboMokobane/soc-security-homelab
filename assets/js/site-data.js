@@ -351,17 +351,41 @@ about: {
             ],
 
       images: [
-                {
-                  src: "assets/images/topology.png",
-                  alt: "Proxmox Cluster configuration and hosted virtual machines",
-                  caption: "Node 1: Core Proxmox environment on 10.10.1.0/24, protected by pfSense and hosting the primary lab services across VLANs 10, 20, and 30."
-                },
-                {
-                  src: "assets/images/Screenshot 2026-08-11 080159.png",
-                  alt: "Proxmox Node 2 configuration and hosted containers",
-                  caption: "Node 2: Separate Proxmox environment on 10.20.1.0/24, protected by OPNsense and used for isolated testing, containers, and expanded security services. Node is not working splease see logs @Proxmox Cluster Operations"
-                }
-              ]
+            {
+              src: "assets/images/topology.png",
+              alt: "Homelab network topology showing Proxmox, pfSense, OPNsense and VLAN segmentation",
+              caption:
+                "Homelab architecture across two Proxmox environments, with pfSense and OPNsense providing routing, firewalling and VLAN segmentation."
+            },
+          
+            {
+              src: "assets/images/pfsense-dashboard.png",
+              alt: "pfSense firewall dashboard running on Proxmox Node 1",
+              caption:
+                "pfSense deployed as the primary firewall and gateway for the Node 1 environment, managing the 10.10.1.0/24 network and segmented lab VLANs."
+            },
+          
+            {
+              src: "assets/images/pfsense-vlans.png",
+              alt: "pfSense VLAN interfaces configured for the Proxmox homelab",
+              caption:
+                "VLAN interfaces configured in pfSense to separate vulnerable systems, Windows infrastructure and container-based workloads."
+            },
+          
+            {
+              src: "assets/images/pfsense-firewall-rules.png",
+              alt: "pfSense firewall rules controlling traffic between homelab VLANs",
+              caption:
+                "Firewall policies used to control communication between VLANs and enforce network segmentation within the lab."
+            },
+          
+            {
+              src: "assets/images/proxmox-node2.png",
+              alt: "Proxmox Node 2 configuration and hosted virtual machines",
+              caption:
+                "Node 2 provides a separate Proxmox environment on 10.20.1.0/24 with OPNsense and additional lab workloads. Recurring RAID and availability issues are documented separately under Proxmox Cluster Operations."
+            }
+          ]
     },
     {
       id: "homelab-day-02", category: "Homelab", status: "documented", featured: true,
