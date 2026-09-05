@@ -580,66 +580,87 @@ about: {
       ]
 },
 
-    {
-      id: "proxmox-cluster-notes",
-      category: "Infrastructure",
-      status: "in progress",
-      featured: true,
 
-      title: "Proxmox Cluster Operations",
-      date: "2026-08-04",
+{
+  id: "proxmox-cluster-notes",
+  category: "Infrastructure",
+  status: "in progress",
+  featured: false,
 
-      tags: [
-        "Homelab",
-        "Proxmox",
-        "Cluster",
-        "Quorum",
-        "RAID",
-        "Recovery",
-        "Power Outages"
-      ],
+  title: "Proxmox Cluster Operations",
+  date: "2026-08-04",
 
-      tools: [
-        "Proxmox VE",
-        "Corosync",
-        "SSH",
-        "HP ProLiant Gen8"
-      ],
+  tags: [
+    "Homelab",
+    "Proxmox",
+    "Cluster",
+    "Quorum",
+    "RAID",
+    "Recovery",
+    "Power Outages",
+    "LXC",
+    "OPNsense"
+  ],
 
-      summary:
-        "Documented operational and recovery challenges within a two-node Proxmox cluster, including recurring PVE2 RAID issues following local power outages and the resulting impact on cluster quorum and PVE1 availability.",
+  tools: [
+    "Proxmox VE",
+    "Corosync",
+    "SSH",
+    "HP ProLiant Gen8",
+    "LXC",
+    "OPNsense",
+    "Pi-hole"
+  ],
 
-      findings: [
-        "Periodic power outages in my area have contributed to recurring stability issues on PVE2, particularly with its RAID/storage subsystem.",
-        "When PVE2 becomes unavailable, the two-node cluster can lose quorum even though PVE1 itself is still operational.",
-        "Loss of quorum can prevent normal VM management operations on the remaining healthy node.",
-        "Cluster health, RAID health and individual node reachability need to be checked separately when troubleshooting.",
-        "A two-node Proxmox cluster is more sensitive to unexpected node failures because there is no third vote available for quorum."
-      ],
+  summary:
+    "Documented the failure and recovery of PVE2 in a two-node Proxmox cluster, tracing recurring RAID and boot problems to faulty hard drives, replacing the failed storage, rebuilding Proxmox from scratch and planning a lighter LXC-based environment for Node 2.",
 
-      lessons: [
-        "Learned how quorum affects management operations in a two-node Proxmox cluster.",
-        "Improved troubleshooting of node, storage and cluster-level failures separately.",
-        "Recognised the importance of checking RAID health after unexpected shutdowns or power interruptions.",
-        "Learned why reliable power protection is important for virtualization hosts and storage arrays.",
-        "Understood the limitations of running a two-node cluster without an additional quorum vote.",
-        "Keep recovery procedures and important configuration information available outside the cluster."
-      ],
+  findings: [
+    "The recurring PVE2 boot and RAID issues were ultimately traced to faulty hard drives.",
+    "Periodic power outages contributed to repeated unexpected shutdowns and made the storage problems more disruptive.",
+    "When PVE2 became unavailable, the two-node cluster could lose quorum even though PVE1 itself remained operational.",
+    "Loss of quorum affected normal VM management operations on the remaining node.",
+    "Replacing the faulty drives and reinstalling Proxmox was more reliable than continuing to troubleshoot unstable storage.",
+    "After rebuilding PVE2, stale cluster configuration had to be removed before the rebuilt node could be added back into the environment.",
+    "The replacement drives have limited storage capacity, making lightweight LXC containers more suitable for the rebuilt node than heavier virtual machines.",
+    "PVE2 will now be used primarily as an experimental playground rather than hosting critical lab workloads."
+  ],
 
-      body: [
-        "This entry documents the operational challenges of maintaining my two-node Proxmox cluster. My area experiences power outages from time to time, which can result in unexpected shutdowns of the physical hosts and create problems when the environment is brought back online.",
+  lessons: [
+    "Learned to separate hardware, storage, network and cluster-level problems during troubleshooting.",
+    "Confirmed that persistent RAID and boot problems can indicate failing physical drives rather than only configuration issues.",
+    "Learned how quorum affects a two-node Proxmox cluster when one node becomes unavailable.",
+    "Improved my understanding of rebuilding and reintroducing a failed Proxmox node into a cluster.",
+    "Recognised the importance of reliable power protection for virtualization hosts and storage systems.",
+    "Learned to adapt infrastructure design to available hardware resources.",
+    "Plan to compare LXC containers with Docker-based workloads to better understand their different use cases.",
+    "Keep recovery notes and important configuration information outside the cluster so they remain available during failures."
+  ],
 
-        "PVE2, running on an HP ProLiant Gen8, has experienced recurring RAID and storage-related issues following these interruptions. In some cases the node fails to return to a healthy state, requiring troubleshooting through the console or SSH before it can properly rejoin the cluster.",
+  body: [
+    "This entry documents one of the more significant failures in my homelab. My area experiences power outages from time to time, which can result in unexpected shutdowns of the physical Proxmox hosts. PVE2 began experiencing recurring RAID, storage and boot problems after several of these interruptions.",
 
-        "Because the environment currently consists of only two Proxmox nodes, losing PVE2 also affects cluster quorum. This resulted in situations where PVE1 was online and reachable but normal management operations, including access to or control of running virtual machines, were restricted because the cluster no longer had quorum.",
+    "Initially, the problem appeared to be related to RAID configuration or the Proxmox installation itself. Troubleshooting involved changing storage settings, checking drive detection, testing different boot configurations and attempting to bring the node back online through the console and SSH.",
 
-        "Troubleshooting involved checking PVE2 independently from the cluster, reviewing its RAID and storage state, confirming network connectivity, checking Corosync membership and verifying quorum status from PVE1. This helped separate hardware or storage problems on PVE2 from the wider effects they caused at cluster level.",
+    "After continued troubleshooting, I confirmed that the hard drives themselves were faulty. At that point, continuing to repair the existing installation was no longer worthwhile. I replaced the drives and performed a fresh Proxmox installation on PVE2.",
 
-        "The experience highlighted an important weakness in a two-node cluster design. A failure on one physical node can affect management of the remaining node even when that server is otherwise healthy. Future improvements include better power protection, continued RAID health monitoring and implementing a more resilient quorum strategy."
-      ],
+    "Because PVE2 had previously been part of the two-node cluster, the old cluster state also had to be cleaned up before the rebuilt node could be introduced again. This effectively meant starting from scratch on Node 2 while keeping the main PVE1 environment intact.",
 
-      images: []
-    },
+    "The incident also demonstrated one of the weaknesses of a two-node cluster. When PVE2 was unavailable, PVE1 could remain powered on and reachable while the cluster lost quorum, restricting normal management of virtual machines. This helped me understand the difference between an individual node being healthy and the cluster itself being healthy.",
+
+    "The rebuilt PVE2 will take a different direction. The replacement drives are smaller, so instead of filling the node with larger virtual machines and another Docker-heavy environment, I plan to experiment primarily with lightweight LXC containers.",
+
+    "One of the goals is to compare LXC containers with the Docker environment already running elsewhere in the homelab. I want to understand the differences in resource usage, networking, isolation, management and the types of services that are better suited to each approach.",
+
+    "I also plan to deploy OPNsense again as the firewall for Node 2 and rebuild its separate network environment. This will allow the node to remain isolated from the primary pfSense-based environment while giving me another firewall platform to experiment with.",
+
+    "Pi-hole is one of the first services I want to deploy as an LXC container. Beyond basic DNS filtering, I want to explore its DNS logs, query behaviour, blocking policies and how DNS activity can be monitored from a security perspective.",
+
+    "Going forward, PVE2 will function more as a playground for experimentation. Instead of trying to duplicate everything running on PVE1, the rebuilt node will be used to test LXC containers, OPNsense, DNS services and other infrastructure ideas while keeping the main security lab stable."
+  ],
+
+  images: []
+},
 
 {
   id: "docker-portainer-notes",
