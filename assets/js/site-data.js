@@ -376,7 +376,7 @@ about: {
               src: "assets/images/pfsense-firewall-rules.png",
               alt: "pfSense firewall rules controlling traffic between homelab VLANs",
               caption:
-                "Firewall policies used to control communication between VLANs and enforce network segmentation within the lab."
+                "Firewall policies used to control communication between VLANs and enforce network segmentation within the lab. The rule set was replicated across the remaining VLAN interfaces to maintain consistent traffic control and security boundaries."
             },
           
             {
