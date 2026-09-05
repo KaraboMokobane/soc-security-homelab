@@ -588,7 +588,7 @@ about: {
   featured: false,
 
   title: "Proxmox Cluster Operations",
-  date: "2026-08-04",
+  date: "2026-09-06",
 
   tags: [
     "Homelab",
