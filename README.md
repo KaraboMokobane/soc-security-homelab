@@ -281,31 +281,27 @@ The interface includes:
 ```text
 soc-security-homelab/
 │
-├── index.html
-├── about.html
-├── logs.html
-├── homelab.html
-├── entry.html
-├── 404.html
-├── vercel.json
-├── README.md
+├── index.html              # Home page
+├── about.html              # About / profile page
+├── homelab.html            # Homelab overview
+├── logs.html               # Research and project archive
+├── entry.html              # Individual project/log entry renderer
+├── 404.html                # Custom error page
+├── vercel.json             # Vercel deployment configuration
+├── README.md               # Project documentation
 │
 └── assets/
     ├── css/
-    │   └── styles.css
+    │   └── styles.css      # Global styling and responsive layout
     │
     ├── images/
-    │   ├── lab screenshots
-    │   ├── diagrams
-    │   └── visual assets
+    │   └── screenshots, topology diagrams and project visuals
     │
     └── js/
-        ├── site-data.js
-        ├── components.js
-        └── app.js
+        ├── app.js          # Page rendering and site behaviour
+        ├── components.js   # Reusable UI components
+        └── site-data.js    # Homelab, research and portfolio content
 ```
-
----
 
 ## Technology Stack
 
