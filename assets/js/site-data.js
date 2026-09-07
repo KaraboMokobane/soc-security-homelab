@@ -83,62 +83,6 @@ about: {
 },
 
   entries: [
-
-{
-      id: "network-reconnaissance", category: "Cybersecurity Lab", status: "in progress", featured: true,
-      title: "Phase 1 — Network Discovery and Reconnaissance", date: "2026-09-07", tags: ["Reconnaissance", "Nmap", "Kali Linux", "Metasploitable2", "Security Onion", "Zeek", "Suricata", "Wazuh", "pfSense", "MITRE ATT&CK", "T1046"], tools: ["Kali Linux", "Nmap", "Metasploitable2", "Security Onion", "Zeek", "Suricata", "pfSense / OPNsense", "Wazuh"],
-      findings: [
-                "The experiment is designed to observe how network reconnaissance appears across offensive and defensive security tooling.",
-                "Nmap will be used to perform host discovery, port scanning, service enumeration and operating system fingerprinting against Metasploitable2.",
-                "Security Onion telemetry will be reviewed to identify Zeek connection records and Suricata alerts generated during the scan.",
-                "Firewall logs will be reviewed to identify network connections between the Kali Linux source and the vulnerable target.",
-                "Relevant Wazuh events will be reviewed where endpoint or system telemetry is available."
-      ],
-      summary: "Simulating network reconnaissance from Kali Linux against Metasploitable2 and investigating how the activity is detected and recorded across Security Onion, Zeek, Suricata, firewall telemetry and Wazuh.",
-      lessons: [
-                "Network reconnaissance is one of the earliest stages of understanding a target environment before exploitation.",
-                "Nmap provides multiple scanning techniques for discovering hosts, ports, services and operating system information.",
-                "The same reconnaissance activity can generate different evidence depending on whether it is viewed from the attacker, network sensor, firewall or endpoint perspective.",
-                "Zeek connection logs can provide detailed network metadata even when an activity does not generate a traditional security alert.",
-                "Suricata can provide signature-based detection of suspicious scanning and reconnaissance behaviour.",
-                "Correlating timestamps, source addresses, destination addresses and ports across multiple security systems is an important part of incident investigation.",
-                "The experiment maps to MITRE ATT&CK T1046 — Network Service Scanning under the Discovery tactic."
-      ],
-      body: [
-              "Phase 1 of the cybersecurity lab focuses on reconnaissance and vulnerability management. The first experiment introduces controlled network discovery against an intentionally vulnerable Linux system using Kali Linux and Nmap.",
-              "Kali Linux is used as the reconnaissance system and Metasploitable2 as the target. The experiment progresses from basic host discovery to port scanning, service enumeration and operating system fingerprinting. The objective is not only to identify exposed services, but to understand what information an attacker can collect before attempting exploitation.",
-              "The defensive side of the experiment focuses on observing the same activity through Security Onion. Zeek connection telemetry will be used to identify communication between the Kali Linux source and Metasploitable2, while Suricata alerts will be reviewed for scanning or reconnaissance-related detections.",
-              "Firewall telemetry from pfSense or OPNsense will also be reviewed to determine what network-level evidence is produced during the reconnaissance activity. Where applicable, Wazuh events from the target or supporting systems will be correlated with the network telemetry.",
-              "The investigation will compare timestamps, source and destination addresses, ports, protocols and detected services across the different platforms. This creates an attack-to-detection workflow where activity generated from Kali Linux can be followed through the defensive monitoring environment.",
-              "The simulated incident is documented as Suspicious Network Reconnaissance Detected Against Vulnerable Linux Server. The activity maps to MITRE ATT&CK technique T1046 — Network Service Scanning within the Discovery tactic.",
-              "Once the experiment is completed, this entry will be updated with the actual Nmap results, Security Onion evidence, firewall telemetry, Wazuh observations and conclusions from the investigation."
-      ],
-      images: [
-        {
-          src: "assets/images/recon-nmap-discovery.png",
-          alt: "Nmap network discovery from Kali Linux",
-          caption:
-            "Kali Linux performing controlled network reconnaissance against the vulnerable Metasploitable2 environment.",
-          afterParagraph: 2
-        },
-
-        {
-          src: "assets/images/recon-security-onion.png",
-          alt: "Security Onion telemetry showing reconnaissance activity",
-          caption:
-            "Security Onion telemetry reviewed to correlate Zeek connections and Suricata detections with the reconnaissance activity generated from Kali Linux.",
-          afterParagraph: 4
-        },
-
-        {
-          src: "assets/images/recon-firewall-logs.png",
-          alt: "Firewall logs showing reconnaissance traffic",
-          caption:
-            "Firewall telemetry used to validate connections between the reconnaissance source and the vulnerable target.",
-          afterParagraph: 5
-        }
-      ]
-    },
     
     {
       id: "AWS", category: "AWS", status: "documented", featured: true,
