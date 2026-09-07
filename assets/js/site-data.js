@@ -83,6 +83,156 @@ about: {
 },
 
   entries: [
+
+    {
+    id: "phase-01-network-discovery",
+    category: "Attack & Detection",
+    status: "in progress",
+    featured: true,
+
+    title: "Phase 1 — Network Discovery and Reconnaissance",
+    date: "2026-09-07",
+
+    tags: [
+        "Reconnaissance",
+        "Nmap",
+        "Metasploitable2",
+        "MITRE ATT&CK",
+        "Security Onion",
+        "Zeek",
+        "Suricata",
+        "Wazuh"
+    ],
+
+    tools: [
+        "Kali Linux",
+        "Nmap",
+        "Metasploitable2",
+        "Security Onion",
+        "Zeek",
+        "Suricata",
+        "pfSense / OPNsense",
+        "Wazuh"
+    ],
+
+    summary:
+        "Controlled network reconnaissance experiment against a vulnerable Linux server, designed to study host discovery, port scanning, service enumeration and OS fingerprinting while correlating the activity across network and endpoint security monitoring platforms.",
+
+    topologyTerminal: {
+        command: "nmap -sn <target-subnet> && nmap -sV -O <metasploitable-ip>",
+
+        output: `ATTACK SOURCE
+Kali Linux
+
+TARGET
+Metasploitable2
+
+OBJECTIVES
+- Host discovery
+- Port scanning
+- Service enumeration
+- Service/version fingerprinting
+- Operating system fingerprinting
+
+DEFENSIVE TELEMETRY
+Security Onion
+├── Zeek connection logs
+└── Suricata alerts
+
+Firewall
+└── pfSense / OPNsense logs
+
+Endpoint / SIEM
+└── Wazuh events where applicable
+
+MITRE ATT&CK
+T1046 — Network Service Scanning`
+    },
+
+    body: `
+        <h3>Objective</h3>
+
+        <p>
+            The objective of this experiment is to simulate the reconnaissance
+            activity that commonly occurs before exploitation. Kali Linux is
+            used as the attacking system while Metasploitable2 acts as the
+            intentionally vulnerable target.
+        </p>
+
+        <p>
+            The experiment begins with network discovery before progressing
+            through port scanning, service enumeration and operating system
+            fingerprinting using Nmap.
+        </p>
+
+        <h3>Attack Scenario</h3>
+
+        <p>
+            A system on the lab network begins probing a vulnerable Linux
+            server to determine whether it is reachable and identify exposed
+            network services.
+        </p>
+
+        <p>
+            The reconnaissance activity is then investigated from the
+            defensive side of the environment to determine what evidence was
+            produced by the scan.
+        </p>
+
+        <h3>Detection and Investigation</h3>
+
+        <p>
+            Nmap output from Kali Linux will be compared with telemetry from
+            Security Onion, including Zeek connection records and Suricata
+            alerts. Firewall logs from pfSense or OPNsense will also be
+            reviewed, together with relevant Wazuh events where available.
+        </p>
+
+        <p>
+            This provides an attack-to-detection workflow rather than viewing
+            the reconnaissance activity only from the attacker's perspective.
+        </p>
+
+        <h3>MITRE ATT&CK Mapping</h3>
+
+        <p>
+            T1046 — Network Service Scanning<br>
+            Tactic: Discovery
+        </p>
+
+        <h3>Incident Scenario</h3>
+
+        <p>
+            <strong>
+            Suspicious Network Reconnaissance Detected Against Vulnerable
+            Linux Server
+            </strong>
+        </p>
+
+        <p>
+            The final investigation will correlate the attacking host,
+            destination system, ports contacted, services discovered and
+            security telemetry produced across the lab's monitoring systems.
+        </p>
+    `,
+
+    findings: [
+        "Experiment currently in progress.",
+        "Nmap reconnaissance results will be correlated with Security Onion telemetry.",
+        "Zeek connection records will be reviewed for evidence of scanning behaviour.",
+        "Suricata alerts will be reviewed for reconnaissance-related detections.",
+        "Firewall telemetry will be compared with observed attack activity.",
+        "Relevant Wazuh events will be included where endpoint visibility exists."
+    ],
+
+    lessons: [
+        "To be updated after completing the attack and investigation.",
+        "The experiment is intended to demonstrate the relationship between offensive reconnaissance and defensive network telemetry."
+    ],
+
+    images: []
+},
+    
     {
       id: "AWS", category: "AWS", status: "documented", featured: true,
       title: "AWS Summit 2026 — Red Team vs Blue Team in the AI Era", date: "2026-08-19", tags: ["AWS", "Amazon", "Learning","AI Security", "Red Team", "Blue Team", "Prompt Injection", "Agentic AI", "Cybersecurity"], tools: ["AWS", "Agentic AI"],
