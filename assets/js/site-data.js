@@ -85,7 +85,7 @@ about: {
   entries: [
 
 {
-  id: "network-reconnaissance",
+  id: "incident-001-network-reconnaissance",
   category: "Cybersecurity Lab",
   status: "in progress",
   featured: true,
@@ -122,9 +122,9 @@ about: {
     "Wazuh"
   ],
 
-  summary:
-        "Simulating network reconnaissance from Kali Linux against segmented lab networks and the Ubuntu server hosting deliberately vulnerable web applications, then investigating the activity across Security Onion, Zeek, Suricata, pfSense and Wazuh. During the experiment, pfSense logging was adjusted to provide clearer visibility of Nmap-generated inter-VLAN traffic.",
-
+ summary:
+  "Incident 001 investigates controlled network reconnaissance originating from Kali Linux against the Ubuntu server hosting deliberately vulnerable web applications. The activity is examined across pfSense, Security Onion, Zeek, Suricata and Wazuh to determine how network scanning appears across firewall, network and endpoint telemetry.",
+  
   findings: [
     "The experiment compares network reconnaissance from both offensive and defensive perspectives.",
     "Nmap is used from Kali Linux to identify reachable systems, open ports, exposed services and application infrastructure.",
@@ -187,7 +187,7 @@ about: {
 
   images: [
     {
-      src: "assets/images/recon-nmap-ubuntu.png",
+      src: "assets/images/incident-001-nmap.png",
       alt: "Nmap reconnaissance from Kali Linux against Ubuntu Docker server",
       caption:
         "Nmap reconnaissance from Kali Linux identified six reachable systems and their exposed TCP services across the VLAN 30 application environment.",
@@ -195,7 +195,7 @@ about: {
     },
 
     {
-      src: "assets/images/recon-pfsense-rules.png",
+      src: "assets/images/incident-001-pfsense-rules.png",
       alt: "pfSense logged rules for Kali Linux reconnaissance traffic",
       caption:
         "Dedicated pfSense LAN rules configured for Kali Linux traffic toward VLAN10, VLAN20 and VLAN30, with packet logging enabled to improve reconnaissance visibility.",
@@ -203,7 +203,7 @@ about: {
     },
 
     {
-      src: "assets/images/recon-firewall-logs.png",
+      src: "assets/images/incident-001-pfsense-logs.png",
       alt: "pfSense firewall logs showing reconnaissance traffic",
       caption:
         "pfSense firewall telemetry showing inter-VLAN reconnaissance traffic originating from the Kali Linux host.",
@@ -211,7 +211,7 @@ about: {
     },
 
     {
-      src: "assets/images/recon-security-onion.png",
+      src: "assets/images/incident-001-security-onion.png",
       alt: "Security Onion telemetry showing reconnaissance against Ubuntu server",
       caption:
         "Security Onion used to review Zeek connections and any Suricata detections generated during reconnaissance of the Ubuntu application server.",
@@ -219,7 +219,7 @@ about: {
     },
 
     {
-      src: "assets/images/recon-wazuh-ubuntu.png",
+      src: "assets/images/incident-001-wazuh.png",
       alt: "Wazuh telemetry from Ubuntu server during reconnaissance",
       caption:
         "Wazuh telemetry from the Ubuntu host reviewed alongside network and firewall evidence generated during the reconnaissance experiment.",
