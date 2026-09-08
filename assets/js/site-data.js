@@ -90,7 +90,7 @@ about: {
   status: "in progress",
   featured: true,
 
-  title: "Phase 1 — Network Discovery and Reconnaissance",
+  title: "Incident 001 — Network Discovery and Reconnaissance",
   date: "2026-09-07",
 
   tags: [
@@ -123,46 +123,66 @@ about: {
   ],
 
   summary:
-    "Simulating network reconnaissance from Kali Linux against the Ubuntu server hosting deliberately vulnerable web applications, then investigating how the activity appears across Security Onion, Zeek, Suricata, pfSense and Wazuh.",
+        "Simulating network reconnaissance from Kali Linux against segmented lab networks and the Ubuntu server hosting deliberately vulnerable web applications, then investigating the activity across Security Onion, Zeek, Suricata, pfSense and Wazuh. During the experiment, pfSense logging was adjusted to provide clearer visibility of Nmap-generated inter-VLAN traffic.",
 
   findings: [
-    "Nmap reconnaissance identified six reachable systems within the VLAN 30 environment.",
-    "The scan identified exposed SSH, HTTP, DNS, MySQL and application-specific services across the discovered hosts.",
-    "The Ollama host exposed TCP port 11434 in addition to SSH and HTTP services.",
-    "Containerised workloads using macvlan appeared as independently addressable systems during reconnaissance.",
-    "One vulnerable application environment exposed MySQL on TCP port 3306, demonstrating how supporting application services can also become visible during network discovery.",
-    "The next phase of the investigation is to correlate the reconnaissance activity with Zeek, Suricata, pfSense and Wazuh telemetry."
+    "The experiment compares network reconnaissance from both offensive and defensive perspectives.",
+    "Nmap is used from Kali Linux to identify reachable systems, open ports, exposed services and application infrastructure.",
+    "Scanning the Ubuntu Docker host can reveal services exposed by both the underlying operating system and containerised applications.",
+    "Initial Nmap activity was not clearly visible in the pfSense firewall logs because the traffic was matching the broad default LAN allow rule without dedicated logging for the reconnaissance path.",
+    "Dedicated logged pass rules were created on the LAN interface for Kali Linux at 10.10.1.50 to VLAN10, VLAN20 and VLAN30.",
+    "The pfSense rules use Kali Linux as a /32 source and each VLAN subnet as the destination, with firewall logging enabled.",
+    "The Kali-specific rules were positioned above the broader Default allow LAN to any rule so that reconnaissance traffic matches the dedicated logged rules first.",
+    "After applying the rules, pfSense began providing clearer firewall telemetry showing Kali-generated traffic crossing into the segmented VLAN networks.",
+    "Zeek telemetry will be reviewed to identify connections between the Kali Linux source and reconnaissance targets.",
+    "Suricata will be reviewed for reconnaissance or port-scanning alerts generated during the experiment.",
+    "Because the Ubuntu server is monitored by Wazuh, endpoint telemetry will also be reviewed for events that correlate with the network scan.",
+    "The reconnaissance activity maps to MITRE ATT&CK T1046 — Network Service Scanning under the Discovery tactic."
   ],
 
   lessons: [
+    "Successful network activity does not automatically mean that sufficient security telemetry is being generated for investigation.",
+    "Firewall rule logging must be configured on the rule that actually matches the traffic in order to provide useful visibility.",
+    "pfSense evaluates interface rules based on where traffic enters the firewall, so reconnaissance originating from Kali Linux is controlled and logged on the LAN interface.",
+    "Specific firewall rules placed above broader allow rules make it easier to identify and investigate traffic associated with a particular host or security experiment.",
+    "Logging Kali-to-VLAN traffic improves monitoring and auditability but does not by itself constitute access-control hardening because the traffic is still permitted.",
+    "True firewall hardening would involve applying least-privilege access, reducing broad allow rules and explicitly restricting unnecessary inter-VLAN communication.",
     "Network reconnaissance can reveal both host-level services and applications exposed through containers.",
     "Nmap provides several techniques for identifying ports, services, versions and operating system information.",
-    "An attacker can build a useful picture of a system before attempting exploitation by identifying exposed services first.",
+    "An attacker can build a useful picture of a target environment before attempting exploitation by identifying exposed services first.",
     "Zeek can provide detailed network metadata even when reconnaissance does not trigger a traditional security alert.",
     "Suricata can generate signature-based detections when scanning behaviour matches configured rules.",
     "Wazuh provides an endpoint perspective that can be compared with network and firewall telemetry.",
-    "Correlating timestamps, source addresses, destination addresses and ports across multiple security platforms is an important investigation skill.",
+    "Correlating timestamps, source addresses, destination addresses, ports and protocols across several platforms is an important investigation skill.",
     "The experiment maps reconnaissance activity to MITRE ATT&CK T1046 — Network Service Scanning."
   ],
 
   body: [
-    "Phase 1 of the cybersecurity lab focuses on network discovery and reconnaissance. The first experiment uses Kali Linux and Nmap to perform controlled reconnaissance against the Ubuntu server hosting the deliberately vulnerable web applications in the lab.",
+    "Incident 001 of the cybersecurity lab focuses on network discovery and reconnaissance. The first experiment uses Kali Linux and Nmap to perform controlled reconnaissance against segmented lab networks and the Ubuntu server hosting deliberately vulnerable web applications.",
 
-    "Instead of targeting a single vulnerable machine, the Ubuntu server provides a more interesting reconnaissance target because it hosts multiple Docker-based services. The objective is to identify the server, enumerate open ports, fingerprint exposed services and determine what information can be collected before interacting directly with the vulnerable applications.",
+    "Instead of targeting a single vulnerable machine, the Ubuntu server provides a more realistic reconnaissance target because it hosts multiple Docker-based services. The objective is to identify reachable systems, enumerate open ports, fingerprint exposed services and determine what information can be collected before interacting directly with the vulnerable applications.",
 
-    "The scan will progress from basic host discovery to TCP port scanning, service and version detection, and operating system fingerprinting. Particular attention will be given to ports exposed by Docker containers and the underlying Ubuntu host.",
+    "The scan progresses from basic host discovery to TCP port scanning, service and version detection, and operating system fingerprinting. Particular attention is given to ports exposed by Docker containers and services running directly on the Ubuntu host.",
 
-    "The defensive investigation will then examine the same reconnaissance activity through Security Onion. Zeek connection telemetry will be reviewed for communication between Kali Linux and the Ubuntu server, while Suricata will be checked for any scanning or reconnaissance-related alerts.",
+    "During the initial testing, the Nmap scan generated network traffic successfully, but the expected reconnaissance activity was not clearly visible in the pfSense firewall logs. Investigation showed that Kali traffic was being permitted by the broad Default allow LAN to any rule, which did not provide the dedicated logging required for this experiment.",
 
-    "Because the traffic crosses segmented lab networks, pfSense firewall logs will also be reviewed to validate connections between the Kali Linux source and the Ubuntu Docker host. This provides another network-level view of the activity.",
+    "To improve firewall visibility, dedicated pass rules were created on the LAN interface for the Kali Linux host at 10.10.1.50. Separate rules were configured for VLAN10 at 10.10.10.0/24, VLAN20 at 10.10.20.0/24 and VLAN30 at 10.10.30.0/24. Each rule uses Kali Linux as a single-host /32 source and has packet logging enabled.",
 
-    "The Ubuntu server already reports telemetry to the Wazuh Manager, allowing the experiment to include an endpoint perspective. Relevant Wazuh events will be reviewed and compared with the Nmap scan, firewall logs and Security Onion telemetry.",
+    "The Kali-specific rules were positioned above the broader Default allow LAN to any rule. This ensures that reconnaissance traffic destined for the lab VLANs matches the dedicated rules first and generates firewall log entries that can be correlated with the Nmap scan.",
 
-    "The investigation will correlate timestamps, source and destination addresses, ports, protocols and identified services across Nmap, Zeek, Suricata, pfSense and Wazuh. The objective is to follow one reconnaissance activity across several layers of the monitoring environment.",
+    "This configuration improves monitoring, auditability and rule specificity, but it is not considered full firewall hardening because the rules continue to permit the traffic. Further hardening would involve replacing broad access with least-privilege policies, limiting unnecessary inter-VLAN communication and permitting only the services required for each lab scenario.",
+
+    "The defensive investigation will examine the same reconnaissance activity through Security Onion. Zeek connection telemetry will be reviewed for communication between Kali Linux and the target systems, while Suricata will be checked for scanning or reconnaissance-related detections.",
+
+    "pfSense firewall logs will provide another network-level perspective by showing inter-VLAN connections initiated by Kali Linux. The source address, destination address, destination ports and protocol information can then be compared with the original Nmap scan.",
+
+    "The Ubuntu server also reports telemetry to the Wazuh Manager, allowing the experiment to include an endpoint perspective. Relevant Wazuh events will be reviewed alongside Nmap output, pfSense logs and Security Onion telemetry.",
+
+    "The investigation will correlate timestamps, source and destination addresses, ports, protocols and identified services across Nmap, Zeek, Suricata, pfSense and Wazuh. The objective is to follow one reconnaissance activity across multiple layers of the monitoring environment.",
 
     "The simulated incident is documented as Suspicious Network Reconnaissance Against Ubuntu Application Server. The activity maps to MITRE ATT&CK technique T1046 — Network Service Scanning within the Discovery tactic.",
 
-    "Once the experiment is completed, this entry will be updated with the actual Nmap results, discovered services, Zeek connections, Suricata observations, pfSense firewall logs, Wazuh telemetry and conclusions from the investigation."
+    "Once the experiment is completed, this entry will be updated with the discovered services, Zeek connections, Suricata observations, pfSense firewall events, Wazuh telemetry and conclusions from the investigation."
   ],
 
   images: [
@@ -175,19 +195,27 @@ about: {
     },
 
     {
-      src: "assets/images/recon-security-onion.png",
-      alt: "Security Onion telemetry showing reconnaissance against Ubuntu server",
+      src: "assets/images/recon-pfsense-rules.png",
+      alt: "pfSense logged rules for Kali Linux reconnaissance traffic",
       caption:
-        "Security Onion used to review Zeek connections and any Suricata detections generated during reconnaissance of the Ubuntu application server.",
-      afterParagraph: 4
+        "Dedicated pfSense LAN rules configured for Kali Linux traffic toward VLAN10, VLAN20 and VLAN30, with packet logging enabled to improve reconnaissance visibility.",
+      afterParagraph: 6
     },
 
     {
       src: "assets/images/recon-firewall-logs.png",
       alt: "pfSense firewall logs showing reconnaissance traffic",
       caption:
-        "pfSense firewall telemetry used to validate connections between the Kali Linux reconnaissance source and the Ubuntu Docker host.",
-      afterParagraph: 5
+        "pfSense firewall telemetry showing inter-VLAN reconnaissance traffic originating from the Kali Linux host.",
+      afterParagraph: 9
+    },
+
+    {
+      src: "assets/images/recon-security-onion.png",
+      alt: "Security Onion telemetry showing reconnaissance against Ubuntu server",
+      caption:
+        "Security Onion used to review Zeek connections and any Suricata detections generated during reconnaissance of the Ubuntu application server.",
+      afterParagraph: 4
     },
 
     {
