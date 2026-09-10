@@ -227,7 +227,6 @@ about: {
     }
   ]
 },
-    ,
     
     {
       id: "AWS", category: "AWS", status: "documented", featured: true,
