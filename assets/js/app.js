@@ -156,9 +156,6 @@ const renderAbout = () => {
 
 
 
-
-
-
   const topologyTerminal = (topology) => {
   if (!topology) return "";
 
@@ -174,10 +171,6 @@ const renderAbout = () => {
     </div>
   </section>`;
 };
-
-
-
-
 
 
   const renderNotFound = () => C.shell("", `<section class="error section"><div class="container container--narrow">${C.promptLine("locate requested-page")}<p class="error-code">404</p>${C.title("Route not found")}<p class="page-description">The requested file does not exist or has moved.</p>${C.button({ label: "Return home", href: "index.html" })}</div></section>`);
