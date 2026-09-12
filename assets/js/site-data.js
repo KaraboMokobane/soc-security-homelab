@@ -36,7 +36,7 @@ window.SITE_DATA = {
   statistics: [
     { value: "02", label: "Proxmox nodes" },
     { value: "19+", label: "Lab Services" },
-    { value: "16", label: "Engineering Logs" }
+    { value: "12", label: "Engineering Logs" }
   ],
 
 about: {
@@ -48,7 +48,7 @@ about: {
     ["role", "IT Professional | Cybersecurity Enthusiast"],
     ["focus", "Blue Team • Networking • Cloud"],
     ["homelab", "Dual-Node Proxmox Lab"],
-    ["toolkit", "pfSense • OPNsense • Wazuh • Docker  • Caldera • Security Onion • Metasploitable2"],
+    ["toolkit", "pfSense • OPNsense • Wazuh • Docker • LXC • MITRE Caldera • ATT&CK Framework • Security Onion • Metasploitable2"],
     ["approach", "Build • Test • Break • Secure • Document"],
     ["status", "Continuously Learning"]
   ],
