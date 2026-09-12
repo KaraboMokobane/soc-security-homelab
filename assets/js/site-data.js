@@ -48,9 +48,9 @@ about: {
     ["role", "IT Professional | Cybersecurity Enthusiast"],
     ["focus", "Blue Team • Networking • Cloud"],
     ["homelab", "Dual-Node Proxmox Lab"],
-    ["toolkit", "pfSense • OPNsense • Wazuh • Docker • LXC • MITRE Caldera • ATT&CK Framework • Security Onion • Metasploitable2"],
+    ["toolkit", "pfSense • OPNsense • Wazuh • Security Onion • Kali Linux • Nmap • Nessus • Burp Suite • MITRE Caldera • MITRE ATT&CK • Docker • Portainer • Proxmox VE • Metasploitable2 • Tailscale"],
     ["approach", "Build • Test • Break • Secure • Document"],
-    ["status", "Continuously Learning"]
+    // ["status", "Continuously Learning"]
   ],
 
   introduction: `Modern infrastructure and security engineering rarely have a single "correct" solution. Every environment is different, and every challenge can be approached from multiple angles. The best way to learn is by building, testing, breaking things, and understanding why they work.
