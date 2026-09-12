@@ -46,7 +46,7 @@ about: {
   profile: [
     ["name", "Karabo Mokobane"],
     ["role", "IT Professional | Cybersecurity Enthusiast"],
-    ["focus", "Blue Team • Networking • Cloud"],
+    ["focus", "Blue Team • SOC Operations • Network Security • Threat Detection • Incident Response • Cloud Security"],
     ["homelab", "Dual-Node Proxmox Lab"],
     ["toolkit", "pfSense • OPNsense • Wazuh • Security Onion • Kali Linux • Nmap • Nessus • Burp Suite • MITRE Caldera • MITRE ATT&CK • Docker • Portainer • Proxmox VE • Metasploitable2 • Tailscale"],
     ["approach", "Build • Test • Break • Secure • Document"],
