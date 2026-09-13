@@ -808,6 +808,122 @@ about: {
 },
 
     {
+  id: "hack-the-box-fawn",
+  category: "Hack The Box",
+  status: "completed",
+  featured: true,
+
+  title: "Hack The Box — Fawn",
+  date: "2026-09-13",
+
+  tags: [
+    "Hack The Box",
+    "Fawn",
+    "Starting Point",
+    "Linux",
+    "Enumeration",
+    "Reconnaissance",
+    "FTP",
+    "Anonymous FTP",
+    "Penetration Testing",
+    "CTF"
+  ],
+
+  tools: [
+    "Hack The Box",
+    "Kali Linux",
+    "Nmap",
+    "FTP"
+  ],
+
+  summary:
+    "Completed the Hack The Box Fawn machine, focusing on network reconnaissance, FTP enumeration and the security risks associated with anonymous access to exposed services.",
+
+  findings: [
+    "Initial reconnaissance was performed against the target to identify exposed network services.",
+    "Nmap identified TCP port 21 as open and revealed that the target was running an FTP service.",
+    "The FTP service allowed anonymous authentication without requiring valid user credentials.",
+    "Anonymous FTP access exposed files stored on the remote server.",
+    "The exposed FTP service demonstrated how weak service configuration can unintentionally disclose sensitive information.",
+    "The challenge reinforced the importance of enumerating discovered services rather than relying only on the initial port scan.",
+    "FTP configuration should restrict anonymous access unless there is a specific business requirement for it.",
+    "The machine was successfully completed as part of my Hack The Box Starting Point progression."
+  ],
+
+  lessons: [
+    "Port scanning identifies the attack surface, but service enumeration reveals how that attack surface can actually be used.",
+    "Nmap service detection helps identify the protocols and applications running behind open ports.",
+    "FTP traditionally operates on TCP port 21 for control connections.",
+    "Anonymous FTP can allow unauthenticated users to access files when the service is improperly configured.",
+    "Default or permissive service configurations can introduce security weaknesses without requiring sophisticated exploitation.",
+    "Testing authentication options should form part of a structured service-enumeration methodology.",
+    "Simple configuration weaknesses can sometimes provide access without exploiting a software vulnerability.",
+    "The exercise reinforces the reconnaissance and enumeration methodology already being practised within my cybersecurity homelab."
+  ],
+
+  body: [
+    "The second machine in my Hack The Box Starting Point progression was Fawn. The exercise focused on identifying and investigating an exposed FTP service and understanding the risks created by insecure service configuration.",
+
+    "I began the assessment by performing reconnaissance against the target using Nmap. The objective was to identify reachable ports, determine which services were listening and identify potential areas for further enumeration.",
+
+    "The scan identified TCP port 21 as open, indicating that the target was running an FTP service. Instead of treating the open port as the final result of reconnaissance, the next step was to interact directly with the service and investigate how it was configured.",
+
+    "During FTP enumeration, I discovered that the server permitted anonymous authentication. This meant that valid user credentials were not required to establish a session with the FTP server.",
+
+    "After connecting anonymously, I was able to enumerate the files available through the service and retrieve the required challenge file. This demonstrated how an exposed service can disclose information even without a complex vulnerability or exploit.",
+
+    "Fawn reinforced an important penetration-testing principle: discovering an open port is only the beginning of the investigation. Each identified service should be enumerated to understand its configuration, authentication requirements and potential exposure.",
+
+    "From a defensive perspective, anonymous FTP should be disabled unless there is a legitimate requirement for public file access. Organisations should also limit network exposure, enforce appropriate authentication and monitor access to externally reachable services.",
+
+    "Compared with the previous Meow machine, Fawn continued building the same core methodology while introducing a different network service. Meow focused on Telnet enumeration, while Fawn introduced FTP and anonymous service access.",
+
+    "The exercise forms part of my ongoing Hack The Box progression alongside my cybersecurity homelab, where I am developing a repeatable workflow of reconnaissance, enumeration, investigation and documentation."
+  ],
+
+  images: [
+    {
+      src: "assets/images/htb-fawn-nmap.png",
+      alt: "Nmap reconnaissance against Hack The Box Fawn machine",
+      caption:
+        "Initial Nmap reconnaissance identifying the FTP service exposed on TCP port 21.",
+      afterParagraph: 2
+    },
+
+    {
+      src: "assets/images/htb-fawn-ftp.png",
+      alt: "FTP connection to Hack The Box Fawn machine",
+      caption:
+        "Connecting to the exposed FTP service and testing anonymous authentication.",
+      afterParagraph: 4
+    },
+
+    {
+      src: "assets/images/htb-fawn-files.png",
+      alt: "Files discovered through anonymous FTP access on Fawn",
+      caption:
+        "Enumerating files available through the anonymously accessible FTP service.",
+      afterParagraph: 5
+    },
+
+    {
+      src: "assets/images/htb-fawn-completed.png",
+      alt: "Hack The Box Fawn machine completed",
+      caption:
+        "Successful completion of the Fawn Starting Point machine.",
+      afterParagraph: 8
+    }
+  ],
+
+  links: [
+    {
+      label: "View Fawn on Hack The Box",
+      url: "https://app.hackthebox.com/machines/Fawn"
+    }
+  ]
+},
+
+    {
   id: "hack-the-box-meow",
   category: "Hack The Box",
   status: "completed",
