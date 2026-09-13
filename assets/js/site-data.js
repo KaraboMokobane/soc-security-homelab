@@ -807,6 +807,118 @@ about: {
   images: []
 },
 
+    {
+  id: "hack-the-box-meow",
+  category: "Hack The Box",
+  status: "completed",
+  featured: true,
+
+  title: "Hack The Box — Meow",
+  date: "2026-09-13",
+
+  tags: [
+    "Hack The Box",
+    "Meow",
+    "Starting Point",
+    "Linux",
+    "Enumeration",
+    "Reconnaissance",
+    "Telnet",
+    "Penetration Testing",
+    "CTF"
+  ],
+
+  tools: [
+    "Hack The Box",
+    "Kali Linux",
+    "Nmap",
+    "Telnet"
+  ],
+
+  summary:
+    "Completed the Hack The Box Meow machine as part of my practical cybersecurity training, applying basic reconnaissance, service enumeration and remote access techniques in a controlled environment.",
+
+  findings: [
+    "The machine was reachable through the Hack The Box lab network and required basic enumeration before attempting access.",
+    "Nmap reconnaissance was used to identify exposed services on the target.",
+    "The scan revealed the Telnet service as an accessible attack surface.",
+    "The exposed service allowed further interaction with the target system.",
+    "Successful access demonstrated how insecure or poorly configured remote management services can expose systems to compromise.",
+    "The machine reinforced the importance of identifying open ports and understanding the purpose of exposed network services.",
+    "The challenge was completed successfully and the machine was pwned on 13 September 2026.",
+    "The achievement awarded 150 XP on Hack The Box."
+  ],
+
+  lessons: [
+    "Basic reconnaissance remains one of the most important stages of a penetration testing workflow.",
+    "Open ports can reveal valuable information about the services and technologies running on a target.",
+    "Nmap is useful for quickly identifying reachable services before deeper investigation begins.",
+    "Legacy remote-access protocols such as Telnet can introduce significant security risks when exposed or poorly secured.",
+    "Enumeration should be methodical rather than immediately attempting exploitation.",
+    "Even beginner machines provide useful practice for building a repeatable penetration testing methodology.",
+    "Working through Hack The Box complements the practical experimentation already being performed within my own cybersecurity homelab."
+  ],
+
+  body: [
+    "As part of my continued practical cybersecurity training, I completed the Meow machine on Hack The Box. The machine forms part of the Hack The Box Starting Point environment and focuses on fundamental reconnaissance and service enumeration skills.",
+
+    "The exercise began by establishing connectivity to the Hack The Box target and performing network reconnaissance using Nmap. The objective was to identify exposed ports and determine which services were available for further investigation.",
+
+    "The scan identified an exposed Telnet service. This provided the main path for interacting with the machine and demonstrated why legacy remote administration protocols can create security risks when they are exposed or configured without appropriate authentication controls.",
+
+    "After identifying the service, further enumeration and interaction with Telnet allowed access to the target environment. The machine was successfully compromised and the challenge was completed.",
+
+    "Although Meow is an introductory Hack The Box machine, the workflow closely reflects the same methodology used in my cybersecurity homelab: discover the target, enumerate exposed services, investigate the available attack surface and document the results.",
+
+    "The challenge also reinforced that successful penetration testing does not always begin with complex exploitation. Careful reconnaissance and understanding exposed services can often reveal the most important weaknesses first.",
+
+    "Completing the machine earned 150 XP on Hack The Box and adds another practical exercise to my growing cybersecurity portfolio.",
+
+    "Future Hack The Box machines will be documented using the same approach, with additional focus on enumeration methodology, vulnerabilities discovered, exploitation techniques, privilege escalation and lessons learned."
+  ],
+
+  images: [
+    {
+      src: "assets/images/htb-meow-nmap.png",
+      alt: "Nmap reconnaissance against Hack The Box Meow machine",
+      caption:
+        "Initial Nmap reconnaissance used to identify exposed services on the Hack The Box Meow target.",
+      afterParagraph: 2
+    },
+
+    {
+      src: "assets/images/htb-meow-telnet.png",
+      alt: "Telnet connection to Hack The Box Meow machine",
+      caption:
+        "Interaction with the exposed Telnet service discovered during enumeration.",
+      afterParagraph: 3
+    },
+
+    {
+      src: "assets/images/htb-meow-root.png",
+      alt: "Successful access to Hack The Box Meow machine",
+      caption:
+        "Successful access to the Meow machine after completing the enumeration process.",
+      afterParagraph: 4
+    },
+
+    {
+      src: "assets/images/htb-meow-achievement.png",
+      alt: "Hack The Box Meow achievement",
+      caption:
+        "Hack The Box achievement confirming completion of the Meow machine on 13 September 2026.",
+      afterParagraph: 7
+    }
+  ],
+
+  links: [
+    {
+      label: "View Hack The Box Achievement",
+      url: "https://labs.hackthebox.com/achievement/machine/3965526/394"
+    }
+  ]
+},
+
 {
   id: "docker-portainer-notes",
   category: "Containers",
