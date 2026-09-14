@@ -725,6 +725,92 @@ about: {
       ]
 },
 
+{
+  id: "proxmox-storage-capacity-troubleshooting",
+  category: "Proxmox Infrastructure",
+  status: "documented",
+  featured: true,
+
+  title: "Proxmox Storage Capacity Troubleshooting — Protecting the Hypervisor",
+  date: "2026-09-14",
+
+  tags: [
+    "Proxmox VE",
+    "Storage",
+    "LVM",
+    "LVM-Thin",
+    "Disk Management",
+    "Linux",
+    "Troubleshooting",
+    "Virtualization",
+    "Hypervisor",
+    "Homelab"
+  ],
+
+  tools: [
+    "Proxmox VE 9.2.5",
+    "Linux CLI",
+    "lsblk",
+    "df",
+    "pvesm",
+    "LVM"
+  ],
+
+  findings: [
+    "The Proxmox root filesystem reached critically high utilisation, initially showing approximately 99% usage in the web interface.",
+    "The pve-root logical volume was approximately 96 GB and contained the Proxmox operating system and local storage.",
+    "The local-lvm storage was a separate LVM-Thin pool of approximately 428 GB used primarily for virtual machine disks.",
+    "Running df -h confirmed that the root filesystem had recovered to approximately 83% utilisation with around 16 GB available.",
+    "Running pvesm status showed that local storage and local-lvm had very different capacity and utilisation levels.",
+    "The VM storage pool was not full, meaning deleting virtual machine disks would not have addressed the actual root filesystem problem.",
+    "lsblk revealed that Proxmox currently sees one approximately 558 GB logical disk rather than several individual physical disks.",
+    "The disk layout suggests that the server's storage controller is presenting multiple physical disks to Proxmox as a single logical volume.",
+    "The existing Proxmox installation, root filesystem and VM storage all depend on this underlying storage configuration."
+  ],
+
+  summary:
+    "Investigated a storage capacity issue on the main Proxmox VE hypervisor after the root filesystem approached full utilisation. The troubleshooting process focused on identifying the difference between Proxmox root storage, local storage and the LVM-Thin pool containing virtual machine disks before deleting any data. This required additional caution because the commands were being executed directly on the production homelab hypervisor rather than inside one of the disposable virtual machines.",
+
+  lessons: [
+    "Always confirm whether I am working inside a VM or directly on the Proxmox hypervisor before running storage or deletion commands.",
+    "I had to continuously remind myself that this was the main PVE host and not one of my lab VMs. A mistake here could affect the entire environment rather than a single machine.",
+    "Do not assume that a full Proxmox dashboard storage indicator means the VM disk pool itself is full.",
+    "df -h is useful for checking filesystem utilisation, while pvesm status provides a Proxmox-specific view of configured storage.",
+    "lsblk helps map physical and logical storage and should be checked before making disk changes.",
+    "Proxmox local storage and local-lvm serve different purposes and should not be treated as interchangeable.",
+    "Deleting VM disks from local-lvm would have created unnecessary data loss because local-lvm was not the source of the root filesystem capacity problem.",
+    "Storage cleanup should begin with identifying large files such as ISO images, backups, templates, logs and package caches rather than immediately deleting virtual disks.",
+    "Hardware RAID or storage controllers can hide individual physical disks from the operating system by presenting them as a single logical disk.",
+    "Infrastructure troubleshooting requires a different mindset from troubleshooting disposable lab machines because the blast radius of an incorrect command is significantly larger."
+  ],
+
+  commands: [
+    "df -h",
+    "df -h /",
+    "apt clean",
+    "pvesm status",
+    "lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS,MODEL",
+    "du -xhd1 /var 2>/dev/null | sort -h",
+    "du -h --max-depth=2 /var/lib/vz 2>/dev/null | sort -h",
+    "pvs",
+    "vgs",
+    "lvs"
+  ],
+
+  reflection:
+    "This troubleshooting session was a useful reminder that the Proxmox host is the foundation of the entire lab. I am used to experimenting aggressively inside Kali, Ubuntu, Windows and other virtual machines because they can normally be restored or rebuilt. This time I had to slow down and verify every command because I was working directly on the main PVE hypervisor. Deleting the wrong logical volume, VM disk or storage configuration could have affected multiple systems at once. The incident reinforced the importance of understanding the storage architecture before making changes and considering the blast radius of every administrative action.",
+
+  nextSteps: [
+    "Identify which directories are consuming the majority of pve-root storage.",
+    "Review local storage for unused ISO images, backups and container templates.",
+    "Inspect the server's physical disk and RAID controller configuration.",
+    "Determine how many physical HDDs are installed and how they are currently presented to Proxmox.",
+    "Evaluate whether additional disks should be presented as separate Proxmox storage pools.",
+    "Create a dedicated backup storage location before making major storage configuration changes.",
+    "Document the final physical and logical storage architecture of the Proxmox server."
+  ]
+},
+    
 
 {
   id: "proxmox-cluster-notes",
