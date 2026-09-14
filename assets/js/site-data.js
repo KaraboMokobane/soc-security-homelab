@@ -726,89 +726,51 @@ about: {
 },
 
 {
-  id: "proxmox-storage-capacity-troubleshooting",
-  category: "Proxmox Infrastructure",
-  status: "documented",
-  featured: true,
+      id: "proxmox-storage-troubleshooting", category: "Proxmox Infrastructure", status: "documented", featured: true,
+      title: "Proxmox Storage Troubleshooting — Protecting the Main Hypervisor", date: "2026-09-14", tags: ["Proxmox VE", "Storage", "LVM", "LVM-Thin", "Linux", "Disk Management", "Troubleshooting", "Virtualization", "Hypervisor"], tools: ["Proxmox VE 9.2.5", "Linux CLI", "LVM", "lsblk", "df", "pvesm"],
+      findings: ["The Proxmox web interface initially showed the main root storage approaching full capacity.",
+                "Using df -h confirmed that pve-root was approximately 96 GB, with around 74 GB used and 16 GB available after some cleanup.",
+                "pvesm status showed that local storage and local-lvm were separate storage areas, with local-lvm still having significant free capacity.",
+                "The VM storage pool was not the source of the immediate problem, so deleting virtual machine disks would not have solved the root filesystem issue.",
+                "lsblk showed a single 558.7 GB logical disk presented to Proxmox, containing the root filesystem and the LVM-Thin VM storage pool.",
+                "The server storage required careful investigation before deleting files because changes were being made directly on the main PVE hypervisor rather than inside a disposable VM."
+      ],
+      summary: "Investigated a storage capacity issue on the main Proxmox VE hypervisor after the root filesystem became critically full. The process involved identifying which storage area was actually running out of space, carefully cleaning unnecessary data and mapping the underlying LVM storage before making further changes.",
+      lessons: ["Always confirm whether I am working on the main Proxmox hypervisor or inside a virtual machine before running deletion or storage commands.", "I had to keep reminding myself that this was not one of my disposable lab VMs — this was the PVE host supporting the entire environment.", "A mistake on the hypervisor has a much larger blast radius because it can affect multiple virtual machines and services at once.", "A full local storage filesystem does not automatically mean that local-lvm or the virtual machine disk pool is also full.", "df -h, pvesm status and lsblk provide different views of the storage environment and should be used together when troubleshooting.", "Deleting virtual machine disks should never be the first response to a Proxmox storage warning without first identifying which filesystem is actually full.", "Unused ISO images, backups, templates, logs and package caches are safer areas to investigate before touching VM disks.", "Understanding the difference between physical disks, logical volumes, LVM-Thin pools and Proxmox storage definitions is important before making storage changes.", "Infrastructure troubleshooting requires more caution than experimenting inside disposable lab machines because the underlying hypervisor supports the entire environment."],
+      body: ["While working in the lab, I noticed that the main Proxmox node was reporting critically high storage utilisation. The web interface initially showed the root storage approaching full capacity, which meant I needed to investigate before the host ran completely out of space.",
+              "The first important distinction was understanding exactly which storage was full. Running df -h showed that /dev/mapper/pve-root was approximately 96 GB, with around 74 GB used and 16 GB available after some cleanup. I also used pvesm status to compare this with local-lvm, which still had a significant amount of capacity available.",
+              "This was where I had to tread carefully. Throughout the process I kept reminding myself that I was not working inside Kali, Ubuntu, Windows or another disposable VM. I was working directly on the main PVE hypervisor. Running the wrong deletion, LVM or storage command here could affect the entire lab rather than a single virtual machine.",
+              "I avoided deleting anything from local-lvm because the investigation showed that this storage contained the virtual disks for many of the machines running in the environment. Removing something from there without understanding the storage layout could have resulted in the loss of one or more lab systems.",
+              "Instead, I started with lower-risk cleanup and investigation. I used apt clean to clear the package cache and commands such as df -h, pvesm status and lsblk to understand how the storage was structured before deciding what could safely be removed.",
+              "The lsblk output showed that Proxmox currently sees a 558.7 GB logical disk. Within this disk, the Proxmox installation has a 96 GB root logical volume and an approximately 428 GB LVM-Thin data pool containing the virtual machine disks. This explained why the root filesystem could become full even while the VM storage pool still had available capacity.",
+              "The troubleshooting also raised another infrastructure question. The physical server contains multiple hard drives, but Proxmox currently sees them through a single logical storage device. This means I still need to investigate how the server's storage controller is presenting the physical disks and whether separating some of them into dedicated VM, backup or ISO storage would improve the design.",
+              "This incident became more than a simple disk cleanup exercise. It reinforced the importance of understanding the storage architecture before making changes and thinking about the blast radius of every administrative command. Inside a disposable VM I can afford to experiment more aggressively. On the hypervisor, every command needs to be deliberate because the rest of the lab depends on it."
+      ],
+      images: [
+        {
+          src: "assets/images/proxmox-storage-full.png",
+          alt: "Proxmox VE dashboard showing critically high root storage utilisation",
+          caption:
+            "The Proxmox node reporting critically high root filesystem utilisation, triggering an investigation into the storage layout before deleting any data.",
+          afterParagraph: 1
+        },
 
-  title: "Proxmox Storage Capacity Troubleshooting — Protecting the Hypervisor",
-  date: "2026-09-14",
+        {
+          src: "assets/images/proxmox-storage-cli.png",
+          alt: "Proxmox terminal showing df and pvesm storage information",
+          caption:
+            "Using df -h and pvesm status to distinguish between the Proxmox root filesystem and the LVM-Thin pool containing the virtual machine disks.",
+          afterParagraph: 5
+        },
 
-  tags: [
-    "Proxmox VE",
-    "Storage",
-    "LVM",
-    "LVM-Thin",
-    "Disk Management",
-    "Linux",
-    "Troubleshooting",
-    "Virtualization",
-    "Hypervisor",
-    "Homelab"
-  ],
-
-  tools: [
-    "Proxmox VE 9.2.5",
-    "Linux CLI",
-    "lsblk",
-    "df",
-    "pvesm",
-    "LVM"
-  ],
-
-  findings: [
-    "The Proxmox root filesystem reached critically high utilisation, initially showing approximately 99% usage in the web interface.",
-    "The pve-root logical volume was approximately 96 GB and contained the Proxmox operating system and local storage.",
-    "The local-lvm storage was a separate LVM-Thin pool of approximately 428 GB used primarily for virtual machine disks.",
-    "Running df -h confirmed that the root filesystem had recovered to approximately 83% utilisation with around 16 GB available.",
-    "Running pvesm status showed that local storage and local-lvm had very different capacity and utilisation levels.",
-    "The VM storage pool was not full, meaning deleting virtual machine disks would not have addressed the actual root filesystem problem.",
-    "lsblk revealed that Proxmox currently sees one approximately 558 GB logical disk rather than several individual physical disks.",
-    "The disk layout suggests that the server's storage controller is presenting multiple physical disks to Proxmox as a single logical volume.",
-    "The existing Proxmox installation, root filesystem and VM storage all depend on this underlying storage configuration."
-  ],
-
-  summary:
-    "Investigated a storage capacity issue on the main Proxmox VE hypervisor after the root filesystem approached full utilisation. The troubleshooting process focused on identifying the difference between Proxmox root storage, local storage and the LVM-Thin pool containing virtual machine disks before deleting any data. This required additional caution because the commands were being executed directly on the production homelab hypervisor rather than inside one of the disposable virtual machines.",
-
-  lessons: [
-    "Always confirm whether I am working inside a VM or directly on the Proxmox hypervisor before running storage or deletion commands.",
-    "I had to continuously remind myself that this was the main PVE host and not one of my lab VMs. A mistake here could affect the entire environment rather than a single machine.",
-    "Do not assume that a full Proxmox dashboard storage indicator means the VM disk pool itself is full.",
-    "df -h is useful for checking filesystem utilisation, while pvesm status provides a Proxmox-specific view of configured storage.",
-    "lsblk helps map physical and logical storage and should be checked before making disk changes.",
-    "Proxmox local storage and local-lvm serve different purposes and should not be treated as interchangeable.",
-    "Deleting VM disks from local-lvm would have created unnecessary data loss because local-lvm was not the source of the root filesystem capacity problem.",
-    "Storage cleanup should begin with identifying large files such as ISO images, backups, templates, logs and package caches rather than immediately deleting virtual disks.",
-    "Hardware RAID or storage controllers can hide individual physical disks from the operating system by presenting them as a single logical disk.",
-    "Infrastructure troubleshooting requires a different mindset from troubleshooting disposable lab machines because the blast radius of an incorrect command is significantly larger."
-  ],
-
-  // commands: [
-  //   "df -h",
-  //   "df -h /",
-  //   "apt clean",
-  //   "pvesm status",
-  //   "lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS,MODEL",
-  //   "du -xhd1 /var 2>/dev/null | sort -h",
-  //   "du -h --max-depth=2 /var/lib/vz 2>/dev/null | sort -h",
-  //   "pvs",
-  //   "vgs",
-  //   "lvs"
-  // ],
-
-  // reflection:
-  //   "This troubleshooting session was a useful reminder that the Proxmox host is the foundation of the entire lab. I am used to experimenting aggressively inside Kali, Ubuntu, Windows and other virtual machines because they can normally be restored or rebuilt. This time I had to slow down and verify every command because I was working directly on the main PVE hypervisor. Deleting the wrong logical volume, VM disk or storage configuration could have affected multiple systems at once. The incident reinforced the importance of understanding the storage architecture before making changes and considering the blast radius of every administrative action.",
-
-  // nextSteps: [
-  //   "Identify which directories are consuming the majority of pve-root storage.",
-  //   "Review local storage for unused ISO images, backups and container templates.",
-  //   "Inspect the server's physical disk and RAID controller configuration.",
-  //   "Determine how many physical HDDs are installed and how they are currently presented to Proxmox.",
-  //   "Evaluate whether additional disks should be presented as separate Proxmox storage pools.",
-  //   "Create a dedicated backup storage location before making major storage configuration changes.",
-  //   "Document the final physical and logical storage architecture of the Proxmox server."
-  // ]
+        {
+          src: "assets/images/proxmox-lsblk-storage.png",
+          alt: "Proxmox lsblk output showing the logical disk and LVM storage layout",
+          caption:
+            "Mapping the storage with lsblk revealed the 96 GB pve-root filesystem and the larger LVM-Thin pool used by the lab virtual machines.",
+          afterParagraph: 6
+        }
+      ]
 },
     
 
