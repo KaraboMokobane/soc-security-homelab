@@ -784,31 +784,31 @@ about: {
     "Infrastructure troubleshooting requires a different mindset from troubleshooting disposable lab machines because the blast radius of an incorrect command is significantly larger."
   ],
 
-  commands: [
-    "df -h",
-    "df -h /",
-    "apt clean",
-    "pvesm status",
-    "lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS,MODEL",
-    "du -xhd1 /var 2>/dev/null | sort -h",
-    "du -h --max-depth=2 /var/lib/vz 2>/dev/null | sort -h",
-    "pvs",
-    "vgs",
-    "lvs"
-  ],
+  // commands: [
+  //   "df -h",
+  //   "df -h /",
+  //   "apt clean",
+  //   "pvesm status",
+  //   "lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS,MODEL",
+  //   "du -xhd1 /var 2>/dev/null | sort -h",
+  //   "du -h --max-depth=2 /var/lib/vz 2>/dev/null | sort -h",
+  //   "pvs",
+  //   "vgs",
+  //   "lvs"
+  // ],
 
-  reflection:
-    "This troubleshooting session was a useful reminder that the Proxmox host is the foundation of the entire lab. I am used to experimenting aggressively inside Kali, Ubuntu, Windows and other virtual machines because they can normally be restored or rebuilt. This time I had to slow down and verify every command because I was working directly on the main PVE hypervisor. Deleting the wrong logical volume, VM disk or storage configuration could have affected multiple systems at once. The incident reinforced the importance of understanding the storage architecture before making changes and considering the blast radius of every administrative action.",
+  // reflection:
+  //   "This troubleshooting session was a useful reminder that the Proxmox host is the foundation of the entire lab. I am used to experimenting aggressively inside Kali, Ubuntu, Windows and other virtual machines because they can normally be restored or rebuilt. This time I had to slow down and verify every command because I was working directly on the main PVE hypervisor. Deleting the wrong logical volume, VM disk or storage configuration could have affected multiple systems at once. The incident reinforced the importance of understanding the storage architecture before making changes and considering the blast radius of every administrative action.",
 
-  nextSteps: [
-    "Identify which directories are consuming the majority of pve-root storage.",
-    "Review local storage for unused ISO images, backups and container templates.",
-    "Inspect the server's physical disk and RAID controller configuration.",
-    "Determine how many physical HDDs are installed and how they are currently presented to Proxmox.",
-    "Evaluate whether additional disks should be presented as separate Proxmox storage pools.",
-    "Create a dedicated backup storage location before making major storage configuration changes.",
-    "Document the final physical and logical storage architecture of the Proxmox server."
-  ]
+  // nextSteps: [
+  //   "Identify which directories are consuming the majority of pve-root storage.",
+  //   "Review local storage for unused ISO images, backups and container templates.",
+  //   "Inspect the server's physical disk and RAID controller configuration.",
+  //   "Determine how many physical HDDs are installed and how they are currently presented to Proxmox.",
+  //   "Evaluate whether additional disks should be presented as separate Proxmox storage pools.",
+  //   "Create a dedicated backup storage location before making major storage configuration changes.",
+  //   "Document the final physical and logical storage architecture of the Proxmox server."
+  // ]
 },
     
 
