@@ -5,7 +5,7 @@ window.SITE_DATA = {
 
   navigation: [
     { label: "home", href: "index.html", page: "home" },
-    { label: "about", href: "about.html", page: "about" },
+    { label: "whoami", href: "about.html", page: "about" },
     { label: "logs/research", href: "logs.html", page: "logs" },
     { label: "homelab", href: "homelab.html", page: "homelab" }
   ],
