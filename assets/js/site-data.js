@@ -492,6 +492,172 @@ about: {
   ]
 },
 
+    {
+  id: "incident-002-02-reflected-xss",
+  category: "Cybersecurity Lab",
+  status: "documented",
+  featured: true,
+
+  title: "Incident 002.2 — Web Application Attacks: Reflected XSS",
+  date: "2026-09-22",
+
+  incident: "Incident 002 — Web Application Attacks",
+
+  tags: [
+    "Web Application Security",
+    "Cross-Site Scripting",
+    "Reflected XSS",
+    "DVWA",
+    "Burp Suite",
+    "Burp Proxy",
+    "Burp Repeater",
+    "Kali Linux",
+    "Security Onion",
+    "Zeek",
+    "Suricata",
+    "Apache",
+    "OWASP",
+    "CWE-79",
+    "Blue Team",
+    "Web Security Testing"
+  ],
+
+  tools: [
+    "Kali Linux",
+    "Burp Suite",
+    "Burp Proxy",
+    "Burp Repeater",
+    "DVWA",
+    "Security Onion",
+    "Zeek",
+    "Suricata",
+    "Apache"
+  ],
+
+  summary:
+    "Performed controlled reflected cross-site scripting testing against DVWA using Burp Suite Proxy and Repeater. The investigation progressed from a normal reflected input baseline to HTML injection and script-tag submission, while Security Onion was used to correlate the activity with Zeek telemetry and a high-severity Suricata web application attack alert.",
+
+  findings: [
+    "The DVWA Reflected XSS page accepted a user-controlled GET parameter named 'name'.",
+    "A normal request using the value Karabo-XSS-Test was reflected directly into the application response.",
+    "Burp Proxy captured the request to /vulnerabilities/xss_r/ and exposed the user-controlled name parameter.",
+    "The request was transferred to Burp Repeater so that the input could be modified while preserving the same session and request context.",
+    "Submitting <b>Karabo-XSS-Test</b> caused the supplied value to be rendered as HTML rather than displayed as encoded text.",
+    "The successful HTML rendering demonstrated that user-controlled markup was being inserted into the returned page without sufficient output encoding.",
+    "A script-tag payload containing alert('Karabo-XSS-Test') was submitted through Burp Repeater to test whether executable JavaScript could be introduced into the reflected response.",
+    "Security Onion recorded traffic from Kali Linux at 10.10.1.50 to the DVWA server at 10.10.30.129 on TCP port 80.",
+    "Zeek generated supporting telemetry including zeek.http, zeek.conn, zeek.file and zeek.weird events for the web request.",
+    "Suricata generated an alert with the signature 'ET WEB_SERVER Script tag in URI Possible Cross Site Scripting Attempt'.",
+    "The Suricata event was classified as a Web Application Attack with high severity.",
+    "The experiment demonstrated the difference between general network visibility from Zeek and signature-based malicious activity detection from Suricata.",
+    "The vulnerability maps to CWE-79 — Improper Neutralization of Input During Web Page Generation."
+  ],
+
+  lessons: [
+    "Reflected XSS occurs when user-controlled input is returned in an HTTP response and interpreted by the browser as active content.",
+    "A baseline value should be tested first to understand normal application behaviour before introducing HTML or JavaScript.",
+    "Burp Proxy makes it possible to identify exactly which HTTP parameter carries user-controlled input.",
+    "Burp Repeater allows the same request to be reproduced and modified without repeatedly using the application form.",
+    "Testing HTML markup before JavaScript helps determine whether the application is encoding output correctly.",
+    "The successful rendering of a bold HTML tag demonstrated that the application was treating supplied markup as part of the page structure.",
+    "Output encoding is an important defence because it ensures characters such as angle brackets are treated as text rather than executable markup.",
+    "A reflected XSS request can leave evidence at multiple layers, including browser traffic, web-server requests, Zeek metadata and Suricata alerts.",
+    "Zeek provides network and HTTP telemetry even when it is not making a malicious-versus-benign decision.",
+    "Suricata can identify known malicious patterns in HTTP requests and classify them as web application attacks.",
+    "The Suricata XSS alert provided stronger detection evidence than was observed during the earlier SQL injection exercise.",
+    "Correlating source IP, destination IP, destination port, timestamps and alert signatures helps reconstruct web application attack activity.",
+    "Manual testing makes it easier to understand the relationship between user input, HTTP requests, application responses and browser interpretation."
+  ],
+
+  body: [
+    "Incident 002.2 continues the web application testing phase of the cybersecurity lab and focuses on reflected cross-site scripting against Damn Vulnerable Web Application (DVWA).",
+
+    "Kali Linux at 10.10.1.50 was used as the testing system, while DVWA was hosted at 10.10.30.129. Burp Suite was positioned between the browser and the vulnerable application so that HTTP requests could be captured, inspected and modified manually.",
+
+    "The investigation began by submitting the normal value Karabo-XSS-Test through the DVWA Reflected XSS form. The value was returned in the page response as part of the Hello message, establishing that the application reflected user-controlled input back into the HTML response.",
+
+    "Burp Proxy captured the corresponding GET request to /vulnerabilities/xss_r/ with the parameter name=Karabo-XSS-Test. This established the specific request parameter responsible for carrying the user-controlled value.",
+
+    "The captured request was then sent to Burp Repeater. Repeater allowed the name parameter to be changed while retaining the same target, session cookie and request structure used by the authenticated DVWA session.",
+
+    "The first input-handling test replaced the baseline value with the HTML markup <b>Karabo-XSS-Test</b>. When the request was rendered, the supplied value appeared in bold. This confirmed that the application was inserting user-controlled HTML into the returned page rather than safely encoding the markup as text.",
+
+    "The behaviour demonstrated an output-encoding weakness. A safer implementation would convert special HTML characters into encoded representations so that browser rendering treats the supplied value as plain text rather than part of the document structure.",
+
+    "Testing then progressed from HTML markup to a JavaScript-oriented payload using a script element containing alert('Karabo-XSS-Test'). The request was submitted manually through Burp Repeater to observe how the application and monitoring environment handled the suspicious input.",
+
+    "The request was then investigated from the defensive side using Security Onion. Traffic between the Kali Linux source at 10.10.1.50 and the DVWA server at 10.10.30.129 was visible in Security Onion Hunt on destination TCP port 80.",
+
+    "Zeek generated multiple telemetry types associated with the request, including zeek.http, zeek.conn, zeek.file and zeek.weird. These records provided network-level evidence of the communication between the testing system and the vulnerable web server.",
+
+    "Unlike the earlier SQL injection investigation, the XSS request also triggered a Suricata detection. The generated signature was ET WEB_SERVER Script tag in URI Possible Cross Site Scripting Attempt.",
+
+    "Security Onion classified the Suricata event under Web Application Attack with a high severity label. This provided a clear example of signature-based intrusion detection identifying suspicious web application input.",
+
+    "The experiment demonstrated an important distinction between telemetry and detection. Zeek recorded the underlying HTTP communication and connection metadata, while Suricata evaluated the request contents against detection rules and generated a security alert.",
+
+    "From an offensive perspective, Burp showed how the application accepted and reflected user-controlled content. From a defensive perspective, Security Onion showed how the same HTTP request appeared as both network telemetry and a signature-based web application alert.",
+
+    "The root cause of reflected XSS is insufficient output encoding of user-controlled input before it is inserted into an HTML response. Context-appropriate output encoding, input validation, secure templating practices and appropriate Content Security Policy controls can reduce the risk of script execution.",
+
+    "The vulnerability maps to CWE-79 — Improper Neutralization of Input During Web Page Generation. The exercise forms part of Incident 002 — Web Application Attacks and follows the same manual testing methodology used during the earlier SQL injection investigation.",
+
+    "The investigation reinforces the lab methodology of establishing normal behaviour first, capturing the request with Burp Proxy, reproducing it in Repeater, modifying one input at a time, analysing the application response and then correlating the resulting activity across defensive monitoring platforms.",
+
+    "Incident 002.2 is documented as Reflected Cross-Site Scripting. The next stage of Incident 002 will focus on Stored XSS, where malicious input persists within the application and can affect subsequent users or sessions without requiring the payload to be included in every request."
+  ],
+
+  images: [
+    {
+      src: "assets/images/incident-002-02-xss-proxy-baseline.png",
+      alt: "Burp Proxy capturing the baseline reflected XSS request",
+      caption:
+        "Burp Proxy capturing the baseline request containing the user-controlled name=Karabo-XSS-Test parameter.",
+      afterParagraph: 4
+    },
+
+    {
+      src: "assets/images/incident-002-02-xss-baseline-response.png",
+      alt: "Burp response showing the reflected baseline value",
+      caption:
+        "The normal Karabo-XSS-Test value is reflected into the DVWA response, establishing the baseline application behaviour.",
+      afterParagraph: 5
+    },
+
+    {
+      src: "assets/images/incident-002-02-xss-html-injection.png",
+      alt: "Burp Repeater showing HTML injection in the reflected XSS page",
+      caption:
+        "The <b> HTML element is accepted through the name parameter and rendered by the application, demonstrating insufficient output encoding.",
+      afterParagraph: 6
+    },
+
+    {
+      src: "assets/images/incident-002-02-xss-script-repeater.png",
+      alt: "Burp Repeater submitting a script tag to the reflected XSS endpoint",
+      caption:
+        "Burp Repeater used to submit a script-tag payload against the reflected XSS endpoint while preserving the authenticated DVWA session.",
+      afterParagraph: 8
+    },
+
+    {
+      src: "assets/images/incident-002-02-xss-suricata-alert.png",
+      alt: "Security Onion Suricata alert detecting a possible cross site scripting attempt",
+      caption:
+        "Suricata detected the script tag in the HTTP request and generated the signature ET WEB_SERVER Script tag in URI Possible Cross Site Scripting Attempt.",
+      afterParagraph: 11
+    },
+
+    {
+      src: "assets/images/incident-002-02-xss-security-onion-hunt.png",
+      alt: "Security Onion Hunt showing Zeek and Suricata events for the XSS request",
+      caption:
+        "Security Onion Hunt correlating Zeek telemetry and the Suricata XSS alert between Kali Linux at 10.10.1.50 and DVWA at 10.10.30.129.",
+      afterParagraph: 13
+    }
+  ]
+},
+
     
     
     {
