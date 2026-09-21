@@ -289,12 +289,12 @@ about: {
 
 
     {
-  id: "web-application-attacks-sqli",
+  id: "incident-002-01-sql-injection",
   category: "Cybersecurity Lab",
-  status: "in progress",
+  status: "documented",
   featured: true,
 
-  title: "Incident 002 — Web Application Attacks: SQL Injection",
+  title: "Incident 002.1 — Web Application Attacks: SQL Injection",
   date: "2026-09-21",
 
   tags: [
@@ -370,7 +370,7 @@ about: {
   ],
 
   body: [
-    "Incident 002 introduces web application security testing into the cybersecurity lab. The first investigation focuses on SQL injection against Damn Vulnerable Web Application (DVWA), a deliberately vulnerable application hosted inside the isolated lab environment.",
+    "Incident 002.1 introduces web application security testing into the cybersecurity lab. The first investigation focuses on SQL injection against Damn Vulnerable Web Application (DVWA), a deliberately vulnerable application hosted inside the isolated lab environment.",
 
     "Kali Linux at 10.10.1.50 was used as the testing system while DVWA was hosted at 10.10.30.129. Burp Suite was positioned between the browser and the target application so that HTTP requests could be intercepted, inspected, modified and resent manually.",
 
