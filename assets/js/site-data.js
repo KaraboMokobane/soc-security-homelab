@@ -607,7 +607,7 @@ about: {
     "Incident 002.2 is documented as Reflected Cross-Site Scripting. The next stage of Incident 002 will focus on Stored XSS, where malicious input persists within the application and can affect subsequent users or sessions without requiring the payload to be included in every request."
   ],
 
-  images: [
+   images: [
     {
       src: "assets/images/incident-002-02-xss-proxy-baseline.png",
       alt: "Burp Proxy capturing the baseline reflected XSS request",
