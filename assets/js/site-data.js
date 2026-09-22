@@ -608,19 +608,12 @@ about: {
   ],
 
    images: [
-    {
-      src: "assets/images/incident-002-02-xss-proxy-baseline.png",
-      alt: "Burp Proxy capturing the baseline reflected XSS request",
-      caption:
-        "Burp Proxy capturing the baseline request containing the user-controlled name=Karabo-XSS-Test parameter.",
-      afterParagraph: 4
-    },
 
     {
       src: "assets/images/incident-002-02-xss-baseline-response.png",
       alt: "Burp response showing the reflected baseline value",
       caption:
-        "The normal Karabo-XSS-Test value is reflected into the DVWA response, establishing the baseline application behaviour.",
+        "The Karabo-XSS-Test value is sent in the request and reflected directly in the DVWA response, establishing the baseline application behaviour.",
       afterParagraph: 5
     },
 
