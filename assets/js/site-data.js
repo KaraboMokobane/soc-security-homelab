@@ -613,7 +613,7 @@ about: {
       src: "assets/images/incident-002-02-xss-baseline-response.png",
       alt: "Burp response showing the reflected baseline value",
       caption:
-        "The Karabo-XSS-Test value is sent in the request and reflected directly in the DVWA response, establishing the baseline application behaviour.",
+        "The Karabo-XSS-Test value is sent in the request and reflected in the DVWA response as Hello Karabo-XSS-Test, establishing the baseline application behaviour.",
       afterParagraph: 5
     },
 
