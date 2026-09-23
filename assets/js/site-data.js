@@ -651,6 +651,174 @@ about: {
   ]
 },
 
+    {
+  id: "incident-002-03-stored-xss",
+  category: "Cybersecurity Lab",
+  status: "documented",
+  featured: true,
+
+  title: "Incident 002.3 — Web Application Attacks: Stored XSS",
+  date: "2026-09-24",
+
+  incident: "Incident 002 — Web Application Attacks",
+
+  tags: [
+    "Web Application Security",
+    "Cross-Site Scripting",
+    "Stored XSS",
+    "DVWA",
+    "Burp Suite",
+    "Burp Proxy",
+    "Burp Repeater",
+    "Kali Linux",
+    "Security Onion",
+    "Zeek",
+    "Suricata",
+    "OWASP",
+    "CWE-79",
+    "CAPEC-592",
+    "Blue Team",
+    "Web Security Testing"
+  ],
+
+  tools: [
+    "Kali Linux",
+    "Burp Suite",
+    "Burp Proxy",
+    "Burp Repeater",
+    "DVWA",
+    "Security Onion",
+    "Zeek",
+    "Suricata"
+  ],
+
+  summary:
+    "Performed controlled Stored Cross-Site Scripting testing against DVWA using Burp Suite Proxy and Repeater. The investigation progressed from a normal guestbook entry to persistent HTML injection and stored JavaScript execution, followed by defensive analysis in Security Onion. Zeek recorded the associated network activity, while Suricata did not generate a corresponding XSS alert during this test.",
+
+  findings: [
+    "The DVWA Stored XSS page accepted user-controlled input through guestbook name and message fields.",
+    "A normal guestbook entry was submitted first to establish the baseline application behaviour.",
+    "Burp Proxy captured the guestbook submission as a POST request to the Stored XSS endpoint.",
+    "The request was transferred to Burp Repeater so that the message parameter could be modified while retaining the same authenticated DVWA session.",
+    "Submitting HTML markup through the message field caused the supplied content to be rendered as HTML rather than safely encoded as text.",
+    "The injected HTML remained present after the page was reloaded, demonstrating that the application stored the user-controlled content.",
+    "A JavaScript payload was then submitted through the guestbook message parameter to test whether executable content could also be stored.",
+    "The stored JavaScript executed when the guestbook page was subsequently loaded, demonstrating Stored Cross-Site Scripting.",
+    "Unlike Reflected XSS, the payload did not need to be present in the later page request because the malicious content had already been stored by the application.",
+    "Security Onion recorded network activity between Kali Linux and the DVWA web server during the experiment.",
+    "Zeek provided HTTP and connection telemetry associated with the Stored XSS testing.",
+    "No corresponding Suricata XSS alert was generated during the Stored XSS experiment.",
+    "The absence of a Suricata alert demonstrated that network visibility and signature-based detection are separate capabilities.",
+    "The vulnerability maps to CWE-79 — Improper Neutralization of Input During Web Page Generation.",
+    "The Stored XSS attack pattern maps to CAPEC-592 — Stored XSS."
+  ],
+
+  lessons: [
+    "Stored XSS differs from Reflected XSS because the malicious input is persisted by the application and can execute during later page loads.",
+    "A baseline submission should be created before introducing HTML or JavaScript so normal application behaviour can be compared with manipulated input.",
+    "Burp Proxy can identify the exact POST request and parameters used to submit user-controlled content.",
+    "Burp Repeater makes it possible to modify the same request repeatedly while maintaining the original session and request structure.",
+    "Testing harmless HTML markup before JavaScript helps determine whether output encoding is being performed correctly.",
+    "Persistence is a key characteristic of Stored XSS and can be demonstrated by refreshing or revisiting the affected page without resubmitting the original payload.",
+    "The later request that triggers Stored XSS may appear normal because the malicious content was stored during an earlier request.",
+    "Stored XSS can affect users who simply view the vulnerable page after the malicious content has already been saved.",
+    "Zeek can provide useful HTTP and connection telemetry even when Suricata does not generate a signature-based alert.",
+    "A missing Suricata alert does not mean that no suspicious activity occurred; it means the traffic did not trigger the active detection rules during the experiment.",
+    "Comparing Reflected XSS and Stored XSS demonstrates how the same CWE-79 weakness can appear through different attack patterns.",
+    "CWE describes the underlying software weakness, while CAPEC describes the attack pattern used to exploit that weakness.",
+    "Secure applications should apply context-appropriate output encoding to untrusted content before rendering it inside a web page."
+  ],
+
+  body: [
+    "Incident 002.3 continues the web application security phase of the cybersecurity lab and focuses on Stored Cross-Site Scripting against Damn Vulnerable Web Application (DVWA).",
+
+    "The objective of this experiment was to understand how Stored XSS differs from the Reflected XSS behaviour observed during Incident 002.2. Rather than requiring the malicious content to be included in every request, Stored XSS allows user-controlled content to be saved by the application and returned during subsequent page loads.",
+
+    "Testing began by submitting a normal guestbook entry to establish the baseline behaviour of the application. The guestbook accepted a name and message and displayed the submitted content on the page.",
+
+    "Burp Proxy captured the guestbook submission as a POST request to the DVWA Stored XSS endpoint. The request contained the user-controlled name and message parameters used by the application when creating a guestbook entry.",
+
+    "The baseline request was then sent to Burp Repeater. Repeater allowed the message field to be modified independently while retaining the same authenticated session, target host and general request structure.",
+
+    "The first manipulation replaced the normal message with HTML markup using a bold element. After the request was submitted, the supplied value was rendered as HTML within the guestbook instead of being displayed as encoded text.",
+
+    "The page was then reloaded and the injected HTML remained visible. This demonstrated that the supplied content was not simply reflected from the current request but had been persisted by the application.",
+
+    "Testing then progressed to JavaScript by submitting a harmless script-based proof of concept through the same guestbook message parameter. The manipulated request was sent using Burp Repeater.",
+
+    "When the Stored XSS page was loaded afterwards, the previously submitted JavaScript was returned as part of the page content and executed by the browser. The original payload was not included in the later page request, confirming the persistent nature of the vulnerability.",
+
+    "This behaviour represents the key distinction between Reflected and Stored XSS. Reflected XSS relies on malicious input being included in the request that generates the vulnerable response, while Stored XSS allows malicious content to remain inside the application and execute when another request later retrieves the affected content.",
+
+    "The same activity was investigated from the defensive side using Security Onion. Network communication between the Kali Linux testing system and the DVWA server was visible during the Stored XSS experiment.",
+
+    "Zeek provided supporting HTTP and connection telemetry for communication with the vulnerable web application. This allowed the offensive testing activity to be correlated with network-level evidence from the monitoring environment.",
+
+    "Suricata was also reviewed for a corresponding Stored XSS detection. Unlike the Reflected XSS experiment, no Suricata alert was generated for the Stored XSS activity during this test.",
+
+    "The absence of a Suricata alert became an important finding rather than a failed experiment. Zeek still demonstrated that the network communication occurred, while Suricata did not classify the traffic as matching one of its active attack signatures. This highlights the difference between telemetry collection and signature-based detection.",
+
+    "From the application perspective, the underlying weakness is insufficient neutralization of user-controlled content before it is included in a generated web page. This maps to CWE-79 — Improper Neutralization of Input During Web Page Generation.",
+
+    "The specific attack pattern demonstrated in this experiment maps to CAPEC-592 — Stored XSS. CWE describes the weakness that makes the vulnerability possible, while CAPEC describes the attack pattern used to exploit that weakness.",
+
+    "The appropriate defensive approach includes context-aware output encoding, safe handling of user-generated content, secure templating practices, input validation where appropriate and additional browser-side controls such as Content Security Policy.",
+
+    "Incident 002.3 reinforces the methodology established throughout the web application testing phase: establish a baseline, capture the original request, manipulate one parameter at a time, verify application behaviour, determine whether the behaviour persists, and correlate the resulting traffic with defensive monitoring platforms.",
+
+    "With SQL Injection, Reflected XSS and Stored XSS now documented, Incident 002 can continue into access control, authentication, session management and additional server-side web application vulnerabilities."
+  ],
+
+  images: [
+    {
+      src: "assets/images/incident-002-03-stored-xss-baseline.png",
+      alt: "DVWA Stored XSS guestbook baseline entry",
+      caption:
+        "A normal guestbook entry is submitted and stored by DVWA, establishing the baseline application behaviour before HTML or JavaScript manipulation.",
+      afterParagraph: 3
+    },
+
+    {
+      src: "assets/images/incident-002-03-stored-xss-burp-baseline.png",
+      alt: "Burp Repeater showing the Stored XSS baseline POST request and response",
+      caption:
+        "Burp Repeater showing the normal Stored XSS POST request and response before modifying the user-controlled guestbook message.",
+      afterParagraph: 5
+    },
+
+    {
+      src: "assets/images/incident-002-03-stored-xss-html-persistence.png",
+      alt: "Persistent HTML injection in the DVWA Stored XSS guestbook",
+      caption:
+        "HTML submitted through the guestbook remains stored after the page is reloaded and is interpreted as markup rather than safely encoded text.",
+      afterParagraph: 7
+    },
+
+    {
+      src: "assets/images/incident-002-03-stored-xss-script-request.png",
+      alt: "Burp Repeater submitting JavaScript to the DVWA Stored XSS endpoint",
+      caption:
+        "Burp Repeater submitting a harmless JavaScript proof of concept through the Stored XSS guestbook message parameter.",
+      afterParagraph: 8
+    },
+
+    {
+      src: "assets/images/incident-002-03-stored-xss-browser-execution.png",
+      alt: "Stored XSS JavaScript executing after the DVWA guestbook page is loaded",
+      caption:
+        "The previously stored JavaScript executes when the guestbook page is loaded again, confirming that the payload persists independently of the later request.",
+      afterParagraph: 9
+    },
+
+    {
+      src: "assets/images/incident-002-03-stored-xss-security-onion.png",
+      alt: "Security Onion Zeek telemetry associated with the Stored XSS experiment",
+      caption:
+        "Security Onion showing Zeek network telemetry associated with the Stored XSS testing. No corresponding Suricata XSS alert was generated during the experiment.",
+      afterParagraph: 14
+    }
+  ]
+},
     
     
     {
