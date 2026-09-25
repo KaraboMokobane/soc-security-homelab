@@ -839,11 +839,15 @@ about: {
     "Insecure Direct Object Reference",
     "Authorization",
     "Horizontal Privilege Escalation",
+    "Object-Level Authorization",
     "WebGoat",
     "Burp Suite",
     "Burp Proxy",
     "Burp Repeater",
     "Kali Linux",
+    "Security Onion",
+    "Zeek",
+    "Network Telemetry",
     "REST API",
     "OWASP",
     "CWE-639",
@@ -855,9 +859,10 @@ about: {
     "Burp Suite",
     "Burp Proxy",
     "Burp Repeater",
-    "OWASP WebGoat"
+    "OWASP WebGoat",
+    "Security Onion",
+    "Zeek"
   ],
-
   summary:
     "Performed controlled Broken Access Control and Insecure Direct Object Reference testing against OWASP WebGoat using Burp Suite Proxy and Repeater. The investigation progressed from identifying the authenticated user's own profile object to accessing and modifying another user's profile by changing only the object identifier while retaining the same authenticated session.",
 
