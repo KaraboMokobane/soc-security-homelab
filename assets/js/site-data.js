@@ -821,7 +821,7 @@ about: {
 },
 
 
-    {
+  {
   id: "incident-002-04-broken-access-control-idor",
   category: "Cybersecurity Lab",
   status: "documented",
@@ -863,86 +863,132 @@ about: {
     "Security Onion",
     "Zeek"
   ],
+
   summary:
-    "Performed controlled Broken Access Control and Insecure Direct Object Reference testing against OWASP WebGoat using Burp Suite Proxy and Repeater. The investigation progressed from identifying the authenticated user's own profile object to accessing and modifying another user's profile by changing only the object identifier while retaining the same authenticated session.",
+    "Performed controlled Broken Access Control and Insecure Direct Object Reference testing against OWASP WebGoat using Burp Suite Proxy and Repeater. The guided lesson progressed from identifying the authenticated user's own object reference to accessing and modifying another user's profile while retaining the same authenticated session. The activity was then reviewed in Security Onion, where Zeek provided HTTP and file telemetry for the WebGoat traffic. The exercise provided a practical introduction to object-level authorization while highlighting the need for future testing in a less guided environment with custom users, roles and resource identifiers.",
 
   findings: [
     "The WebGoat IDOR lesson exposed profile information through a REST-style application endpoint.",
-    "A baseline request to /WebGoat/IDOR/profile returned the currently authenticated user's profile.",
+    "A baseline GET request to /WebGoat/IDOR/profile returned the profile associated with the currently authenticated session.",
     "The authenticated profile belonged to Tom Cat and exposed the object identifier userId 2342384.",
-    "The application also supported direct access to profile objects through the path /WebGoat/IDOR/profile/{userId}.",
-    "The authenticated user's own profile could therefore be referenced directly using /WebGoat/IDOR/profile/2342384.",
-    "Burp Repeater was used to preserve the same authenticated JSESSIONID while modifying only the profile object identifier.",
+    "WebGoat demonstrated an alternate direct-object route using the structure /WebGoat/IDOR/profile/{userId}.",
+    "Tom Cat's own profile could therefore be accessed directly through /WebGoat/IDOR/profile/2342384.",
+    "The presence of a direct object reference was not itself considered a vulnerability because the referenced object still belonged to the authenticated user.",
+    "Burp Repeater was used to preserve the same authenticated JSESSIONID while modifying only the object identifier contained in the request path.",
     "Changing the object identifier from 2342384 to 2342388 resulted in an HTTP 200 response containing another user's profile.",
     "The profile returned for userId 2342388 belonged to Buffalo Bill.",
-    "WebGoat confirmed the unauthorized profile access with the response message 'Well done, you found someone else's profile'.",
-    "The successful GET request demonstrated an authorization failure because the authenticated user could retrieve another user's object without being authorized to access it.",
+    "WebGoat confirmed the successful unauthorized read by indicating that another user's profile had been found.",
+    "The successful GET request demonstrated insufficient object-level authorization because the application returned another user's resource without validating ownership against the authenticated session.",
     "Testing then progressed from unauthorized read access to unauthorized modification of the same object.",
-    "A PUT request was sent to /WebGoat/IDOR/profile/2342388 while retaining the original authenticated session.",
-    "The request body was modified to change attributes belonging to Buffalo Bill's profile, including the role and color values.",
-    "The application accepted the modification even though the authenticated session did not belong to Buffalo Bill.",
+    "A PUT request was submitted to /WebGoat/IDOR/profile/2342388 while retaining the original authenticated session.",
+    "The JSON request body was modified to change properties belonging to Buffalo Bill's profile, including the role and color values.",
+    "WebGoat accepted the modification even though the active authenticated session belonged to a different user.",
     "The experiment therefore demonstrated both unauthorized read and unauthorized write access to another user's object.",
+    "Security Onion recorded network activity generated during the WebGoat IDOR testing.",
+    "Zeek HTTP and file telemetry showed communication from Kali Linux at 10.10.1.50 to the WebGoat server at 10.10.30.128 on TCP port 8080.",
+    "Multiple Zeek HTTP events recorded successful HTTP 200 responses during the authorization testing.",
+    "No corresponding Suricata alert was observed in the captured evidence for the IDOR activity.",
+    "The absence of a signature-based alert reinforced that IDOR requests can appear as ordinary HTTP traffic even when the application is making an incorrect authorization decision.",
     "The vulnerability maps to CWE-639 — Authorization Bypass Through User-Controlled Key.",
-    "The issue falls within the broader category of Broken Access Control because the server trusted a user-controlled object identifier without sufficiently validating ownership or authorization."
+    "The issue falls within the broader category of Broken Access Control because the server trusted a user-controlled object reference without sufficiently validating whether the authenticated identity was authorized to read or modify the referenced resource.",
+    "The guided WebGoat environment also demonstrated a limitation of structured training applications because users, identifiers, expected routes and successful outcomes are predefined by the lesson.",
+    "Further testing is planned in a less controlled environment where custom user accounts, roles, resources and object identifiers can be created and tested independently."
   ],
 
   lessons: [
-    "Authentication and authorization are different security controls. A user can be successfully authenticated while still being unauthorized to access another user's resources.",
-    "An object identifier is not a vulnerability by itself; the vulnerability exists when the server fails to verify whether the authenticated user is permitted to access the referenced object.",
-    "The baseline /profile request demonstrated profile access based on the authenticated session, while the direct /profile/{userId} route allowed the client to explicitly choose an application object.",
-    "Object identifiers can appear in URL paths, query parameters, request bodies or API requests.",
-    "Burp Repeater is useful for authorization testing because the authenticated session can remain unchanged while individual object references are modified.",
-    "Keeping the same JSESSIONID was important because it proved that the authorization boundary was bypassed without changing identities.",
-    "Changing the userId from 2342384 to 2342388 returned Buffalo Bill's profile with HTTP 200, demonstrating unauthorized horizontal access.",
-    "Unauthorized read access can expose another user's information even when the HTTP request itself contains no obviously malicious syntax.",
-    "Changing the request method from GET to PUT demonstrated that the same authorization weakness could also affect modification operations.",
-    "Unauthorized write access is more severe than simple information disclosure because another user's stored data can be changed.",
-    "IDOR traffic can look like legitimate application traffic because the request may contain a normal HTTP method, valid session cookie and valid object identifier.",
-    "Network security tools may have limited context for detecting IDOR because determining whether a user is authorized to access a specific object usually requires application and identity context.",
-    "Server-side authorization should be enforced for every object access regardless of identifiers supplied by the client.",
-    "The application should determine whether the authenticated identity is permitted to read or modify the requested resource before returning or changing that object."
+    "Authentication and authorization are separate security controls. Successfully proving a user's identity does not mean that user should automatically be allowed to access every application resource.",
+    "An object identifier is not a vulnerability by itself; the security failure occurs when the server does not verify whether the authenticated identity is authorized to interact with the referenced object.",
+    "The original /profile request demonstrated session-based access, while /profile/{userId} introduced a client-controlled direct object reference.",
+    "Object identifiers may appear in URL paths, query parameters, request bodies or API requests.",
+    "Burp Repeater is useful for authorization testing because an authenticated session can remain unchanged while individual resource identifiers are manipulated.",
+    "Keeping the same JSESSIONID throughout the experiment was important because it proved that the access-control boundary was bypassed without changing identities.",
+    "Changing the object identifier from 2342384 to 2342388 returned Buffalo Bill's profile with HTTP 200, demonstrating unauthorized horizontal access.",
+    "Changing the HTTP method from GET to PUT demonstrated that the same authorization weakness affected both reading and modifying another user's resource.",
+    "Unauthorized write access can have a greater impact than information disclosure because another user's stored data can be changed.",
+    "IDOR requests may look completely legitimate because they can contain valid HTTP methods, valid session cookies, normal object identifiers and valid application paths.",
+    "Broken Access Control therefore cannot always be identified by looking for obviously malicious payload strings such as those used during SQL Injection or XSS testing.",
+    "Security Onion provided network visibility into the IDOR activity even though the authorization failure itself occurred at the application layer.",
+    "Zeek recorded the HTTP communication, source and destination addresses, destination port and successful server responses associated with the test.",
+    "An HTTP 200 response only confirms that the application processed the request successfully; it does not prove that the request was authorized.",
+    "IDOR can be difficult for network-based detection systems to identify because a request such as GET /profile/{id} may look structurally normal.",
+    "Detecting object-level authorization abuse often requires application identity, ownership and authorization context in addition to network telemetry.",
+    "WebGoat's structured lesson format made the IDOR concept enjoyable to work through because each stage introduced the next part of the authorization problem progressively.",
+    "The guided sequence helped connect object discovery, direct references, unauthorized reading and unauthorized modification rather than treating IDOR as a single request-manipulation trick.",
+    "The controlled nature of WebGoat also limits experimentation because users, object identifiers and expected lesson outcomes are predefined.",
+    "Testing arbitrary identifiers such as simple values like 10 does not automatically create another valid application object when the lesson is built around an existing dataset.",
+    "Future authorization testing should use multiple controlled identities with known ownership relationships so that access-control decisions can be verified rather than guessed.",
+    "Future tests should include users with different privilege levels such as standard user, support user and administrator.",
+    "Horizontal authorization testing should determine whether one ordinary user can access resources belonging to another ordinary user.",
+    "Vertical authorization testing should determine whether lower-privileged users can access operations or resources intended for more privileged roles.",
+    "Object identifiers do not need to be simple sequential numbers. Future tests should include sequential IDs, UUID-style identifiers and other application-generated references.",
+    "Unpredictable identifiers do not replace authorization controls; the server must still validate whether the authenticated identity is permitted to interact with the requested resource.",
+    "Server-side authorization checks should be enforced independently for read, update, delete and other protected operations."
   ],
 
   body: [
     "Incident 002.4 continues the web application security phase of the cybersecurity lab and focuses on Broken Access Control through Insecure Direct Object References using OWASP WebGoat.",
 
-    "The objective of the experiment was to determine whether an authenticated user could access application objects belonging to another user simply by modifying a client-controlled object identifier.",
+    "The objective of the experiment was to understand how object-level authorization failures occur when an authenticated user is allowed to reference application resources directly without the server sufficiently verifying whether that user is permitted to access them.",
+
+    "Unlike the earlier SQL Injection and Cross-Site Scripting experiments, this investigation did not depend on injecting special characters, SQL syntax or executable JavaScript. The primary variable was the identity of the application object requested by an already authenticated user.",
 
     "Testing began with the normal authenticated profile endpoint. A GET request to /WebGoat/IDOR/profile returned the profile associated with the current WebGoat session. The response identified the user as Tom Cat and exposed the userId value 2342384.",
 
-    "This initial request established the authorization baseline. At this stage the application was returning the profile associated with the authenticated session rather than allowing the client to explicitly choose another profile.",
+    "This request established the authorization baseline. At this stage the application determined which profile to return from the authenticated session rather than allowing the client to explicitly select another profile.",
 
-    "The WebGoat lesson then introduced an alternate REST-style route where a profile could be accessed directly using its identifier. Tom Cat's own profile could be addressed using /WebGoat/IDOR/profile/2342384.",
+    "The WebGoat lesson then introduced an alternate REST-style route where a profile could be referenced directly through its object identifier. Tom Cat's own profile could be addressed using /WebGoat/IDOR/profile/2342384.",
 
-    "The direct profile request demonstrated that the userId had become a client-controlled object reference. The presence of a direct reference alone was not considered a vulnerability because the requested object still belonged to the authenticated user.",
+    "This stage demonstrated an important distinction: exposing a resource identifier is not automatically an IDOR vulnerability. The direct request still referenced the authenticated user's own object and therefore remained within the expected authorization boundary.",
 
-    "The direct profile request was transferred to Burp Repeater so that the request could be manipulated while keeping the existing authentication cookie and general HTTP request structure unchanged.",
+    "The direct profile request was transferred to Burp Repeater so that individual elements could be modified while maintaining the same authenticated JSESSIONID and general request structure.",
 
-    "The userId value in the request path was then changed from 2342384 to 2342388. No authentication credentials or session information were changed during this test.",
+    "The profile identifier was then changed from 2342384 to 2342388 while the authenticated session remained unchanged. No new login, credentials or identity information was supplied.",
 
-    "WebGoat returned HTTP 200 and profile information belonging to Buffalo Bill. The response identified the requested object as userId 2342388 and confirmed the lesson with the message that another user's profile had been found.",
+    "WebGoat returned HTTP 200 and profile information belonging to Buffalo Bill. The response identified the requested resource as userId 2342388 and confirmed that another user's profile had been successfully accessed.",
 
-    "This response demonstrated the Broken Access Control condition. The application accepted a user-controlled object identifier and returned another user's resource without confirming that the authenticated session was authorized to access that object.",
+    "This demonstrated the authorization failure. The application accepted a client-controlled object reference and returned another user's resource without sufficiently validating whether the authenticated identity was permitted to access that specific object.",
 
-    "The experiment then progressed from unauthorized read access to unauthorized modification. The same Buffalo Bill profile object was targeted using a PUT request to /WebGoat/IDOR/profile/2342388.",
+    "The experiment then progressed from unauthorized read access to unauthorized modification. The same Buffalo Bill resource was targeted using a PUT request to /WebGoat/IDOR/profile/2342388.",
 
-    "A JSON request body containing the profile attributes was supplied through Burp Repeater. The role was changed to a lower numeric value and the profile color was changed to red as required by the controlled WebGoat lesson.",
+    "A JSON request body was supplied through Burp Repeater. Profile attributes were modified as part of the controlled WebGoat lesson, including changing the role to a lower numeric value and changing the color value to red.",
 
-    "The modification was performed using the same authenticated session that had originally belonged to Tom Cat. The server accepted changes to Buffalo Bill's profile despite the authenticated user not owning the requested resource.",
+    "The PUT request continued using the same authenticated session originally associated with Tom Cat. WebGoat accepted the request and allowed another user's profile object to be modified.",
 
-    "The experiment therefore demonstrated two forms of broken object-level authorization. The GET request allowed unauthorized reading of another user's object, while the PUT request allowed unauthorized modification of that same user's data.",
+    "The completed exercise therefore demonstrated two authorization failures against the same object: an unauthorized GET request exposed another user's information, while an unauthorized PUT request allowed another user's stored data to be changed.",
 
-    "Unlike SQL Injection or Cross-Site Scripting, the IDOR requests contained no obvious malicious characters or executable payloads. Both requests were structurally valid HTTP operations using legitimate application endpoints and valid object identifiers.",
+    "The activity was then reviewed from the defensive side using Security Onion. Traffic generated during the WebGoat testing was visible between the Kali Linux system at 10.10.1.50 and the WebGoat server at 10.10.30.128 on TCP port 8080.",
 
-    "This illustrates why Broken Access Control vulnerabilities can be difficult to identify purely from network traffic. Determining whether GET /profile/2342388 is legitimate requires knowledge of the authenticated identity and whether that identity is permitted to access object 2342388.",
+    "Zeek generated HTTP and file-related telemetry for the communication. Multiple HTTP requests returned status code 200, demonstrating that the application processed the requests successfully even though some of those requests represented unauthorized access to another user's resource.",
 
-    "The underlying weakness maps to CWE-639 — Authorization Bypass Through User-Controlled Key. The application relied on a client-controlled identifier without sufficiently verifying whether the authenticated user was authorized to access or modify the referenced object.",
+    "No corresponding Suricata alert was observed in the captured evidence. This highlighted an important limitation of purely signature-based network detection for application-logic vulnerabilities such as IDOR.",
 
-    "The appropriate defensive approach is to perform server-side authorization checks for every protected object operation. Authentication should establish who the user is, while authorization must independently determine whether that identity is permitted to read, update or otherwise interact with the requested resource.",
+    "From a network perspective, requests to valid application endpoints using valid sessions and legitimate object identifiers can appear normal. Determining whether the request is actually authorized requires additional application context, including the authenticated identity, resource ownership and permissions associated with that identity.",
 
-    "Incident 002.4 demonstrated the transition from payload-oriented vulnerabilities into application logic security. Rather than injecting SQL or JavaScript, the test abused a legitimate application feature by manipulating the relationship between an authenticated identity and a requested object.",
+    "This demonstrated that network visibility and authorization awareness are different capabilities. Zeek could confirm that the traffic occurred, while the application itself was responsible for determining whether the requested resource should have been accessible.",
 
-    "With Broken Access Control and IDOR documented, Incident 002 can continue into authentication weaknesses, where the focus will shift from determining what an authenticated user is authorized to access toward examining how the application establishes and verifies user identity."
+    "The WebGoat exercise was particularly useful because the lesson introduced the vulnerability progressively. Rather than immediately providing the vulnerable identifier, it first demonstrated normal session-based profile access, then direct access to the authenticated user's own object, followed by another user's object and finally unauthorized modification.",
+
+    "Working through the vulnerability in these stages made the exercise both enjoyable and useful for understanding the underlying authorization logic. Each step explained why the next request mattered instead of reducing IDOR testing to simply changing numbers in a URL.",
+
+    "The structured nature of WebGoat also revealed an important limitation. The environment is intentionally designed around predefined users, identifiers, routes and expected answers. Attempting arbitrary values such as a simple object ID of 10 does not provide the same flexibility as testing an application where users and resources can be created independently.",
+
+    "Because of this limitation, the next extension of the authorization lab will move into a less guided environment. Multiple controlled identities will be created with clearly defined ownership and privilege relationships so that horizontal and vertical authorization boundaries can be tested more freely.",
+
+    "A future scenario could include two standard users, a support-style account and an administrator. Each identity would own or have access to different application resources, allowing tests to determine whether one standard user can access another user's object and whether lower-privileged roles can reach administrator-only functionality.",
+
+    "Future experiments will also use different object-reference formats. Instead of relying exclusively on predefined numeric identifiers, resources can use sequential IDs, UUID-style values or other unique references. This will demonstrate that making an identifier difficult to guess does not replace proper server-side authorization.",
+
+    "A suitable next environment for this extension is OWASP crAPI, followed eventually by a small custom REST API hosted inside the Docker lab. A custom application would provide complete control over users, roles, object ownership, identifiers and authorization rules while remaining isolated within the cybersecurity lab.",
+
+    "The custom authorization lab could define separate standard, support and administrator roles and create resources owned by specific users. GET, PUT and DELETE operations could then be tested independently to determine whether authorization is enforced consistently across both object ownership and privilege levels.",
+
+    "This would extend the WebGoat lesson from a guided demonstration into a more realistic application-security investigation where the expected result is not predetermined and authorization decisions must be discovered through testing.",
+
+    "The underlying weakness demonstrated during Incident 002.4 maps to CWE-639 — Authorization Bypass Through User-Controlled Key. The broader security problem is Broken Access Control: the application relied on a client-controlled resource reference without sufficiently validating whether the authenticated identity was authorized to perform the requested operation.",
+
+    "The appropriate defensive approach is to perform server-side authorization checks for every protected resource and every operation. Authentication should establish who the user is, while authorization should independently determine whether that identity is allowed to read, modify, delete or otherwise interact with the requested object.",
+
+    "Incident 002.4 establishes the fundamental IDOR and object-level authorization concepts using WebGoat. A later API authorization experiment will expand these concepts into a less controlled environment with multiple users, multiple privilege levels, custom resources and different object identifier formats."
   ],
 
   images: [
@@ -950,32 +996,40 @@ about: {
       src: "assets/images/incident-002-04-idor-baseline.png",
       alt: "Burp Repeater showing the authenticated user's WebGoat profile",
       caption:
-        "Baseline WebGoat profile request showing the authenticated Tom Cat profile and the exposed userId 2342384 before attempting any object reference manipulation.",
-      afterParagraph: 4
+        "Baseline WebGoat request showing the authenticated Tom Cat profile and the exposed userId 2342384 before attempting object-reference manipulation.",
+      afterParagraph: 5
     },
 
     {
       src: "assets/images/incident-002-04-idor-direct-own-profile.png",
       alt: "WebGoat direct object reference to the authenticated user's own profile",
       caption:
-        "The WebGoat lesson introduces direct object access through /profile/{userId}, allowing the authenticated user's own profile to be referenced explicitly using userId 2342384.",
-      afterParagraph: 6
+        "WebGoat introduces direct object access through /profile/{userId}, allowing Tom Cat's own profile to be explicitly referenced using userId 2342384.",
+      afterParagraph: 7
     },
 
     {
       src: "assets/images/incident-002-04-idor-unauthorized-profile.png",
       alt: "Burp Repeater showing unauthorized access to another WebGoat profile",
       caption:
-        "Burp Repeater showing a successful IDOR test. The authenticated session requests userId 2342388 and WebGoat returns Buffalo Bill's profile with HTTP 200, confirming insufficient object-level authorization.",
-      afterParagraph: 10
+        "Burp Repeater showing a successful IDOR test. The same authenticated session requests userId 2342388 and WebGoat returns Buffalo Bill's profile with HTTP 200, confirming insufficient object-level authorization.",
+      afterParagraph: 11
     },
 
     {
       src: "assets/images/incident-002-04-idor-unauthorized-modification.png",
       alt: "Burp Repeater modifying another user's WebGoat profile through IDOR",
       caption:
-        "Using the same authenticated session, a PUT request targets Buffalo Bill's profile object and modifies another user's data, demonstrating unauthorized write access through the same Broken Access Control weakness.",
-      afterParagraph: 14
+        "Using the same authenticated session, a PUT request targets Buffalo Bill's profile and modifies another user's data, demonstrating unauthorized write access through the same Broken Access Control weakness.",
+      afterParagraph: 15
+    },
+
+    {
+      src: "assets/images/incident-002-04-idor-security-onion.png",
+      alt: "Security Onion Zeek telemetry generated during WebGoat IDOR testing",
+      caption:
+        "Security Onion showing Zeek HTTP and file telemetry between Kali Linux at 10.10.1.50 and the WebGoat server at 10.10.30.128 on TCP port 8080. The requests received successful HTTP 200 responses, while no corresponding Suricata alert was observed.",
+      afterParagraph: 20
     }
   ]
 },
