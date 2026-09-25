@@ -36,7 +36,7 @@ window.SITE_DATA = {
   statistics: [
     { value: "02", label: "Proxmox nodes" },
     { value: "19+", label: "Lab Services" },
-    { value: "12", label: "Engineering Logs" }
+    { value: "18", label: "Engineering Logs" }
   ],
 
 about: {
