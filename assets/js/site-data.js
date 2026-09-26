@@ -1262,7 +1262,7 @@ about: {
     },
 
     {
-      src: "assets/images/incident-002-05-reset-link-host-header-poisoning.png",
+      src: "assets/images/incident-002-05-host-header-poisoning.png",
       alt: "Burp Repeater showing manipulated Host header during WebGoat password reset",
       caption:
         "The password-reset request continues to target WebGoat on TCP port 8080 while the supplied Host header is changed to the WebWolf service on port 9090. WebGoat accepts the manipulated request and marks the reset-link assignment as completed.",
