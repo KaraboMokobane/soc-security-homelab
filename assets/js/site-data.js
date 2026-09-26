@@ -1033,6 +1033,251 @@ about: {
     }
   ]
 },
+
+
+{
+  id: "incident-002-05-authentication-password-recovery",
+  category: "Cybersecurity Lab",
+  status: "documented",
+  featured: true,
+
+  title: "Incident 002.5 — Web Application Attacks: Authentication Weaknesses",
+  date: "2026-09-27",
+
+  incident: "Incident 002 — Web Application Attacks",
+
+  tags: [
+    "Web Application Security",
+    "Authentication",
+    "Password Recovery",
+    "Password Reset",
+    "Security Questions",
+    "Host Header Manipulation",
+    "Account Recovery",
+    "WebGoat",
+    "WebWolf",
+    "Burp Suite",
+    "Burp Proxy",
+    "Burp Repeater",
+    "Kali Linux",
+    "Security Onion",
+    "Zeek",
+    "OWASP",
+    "CWE-640",
+    "Identification and Authentication Failures",
+    "Web Security Testing"
+  ],
+
+  tools: [
+    "Kali Linux",
+    "Burp Suite",
+    "Burp Proxy",
+    "Burp Repeater",
+    "OWASP WebGoat",
+    "WebWolf",
+    "Security Onion",
+    "Zeek"
+  ],
+
+  summary:
+    "Investigated authentication and password-recovery weaknesses in OWASP WebGoat using Burp Suite, WebWolf and Security Onion. The experiment demonstrated how predictable security questions combined with unrestricted attempts can weaken account recovery, and how password-reset link generation can be influenced through a manipulated Host header. Zeek provided network visibility into the activity, while no corresponding Suricata alert was observed.",
+
+  findings: [
+    "The WebGoat Password Reset lessons demonstrated that account recovery should be treated as part of the application's authentication boundary rather than as a separate low-risk feature.",
+
+    "A normal password-reset request was captured through Burp Proxy and reproduced in Burp Repeater to establish baseline recovery behaviour.",
+
+    "The password-recovery workflow used a knowledge-based security question asking for the user's favorite color.",
+
+    "The WebGoat lesson explicitly stated that the recovery mechanism did not implement a lockout mechanism for repeated incorrect answers.",
+
+    "The user tom was selected as the controlled target for the security-question investigation.",
+
+    "A baseline request to /WebGoat/PasswordReset/questions returned a failed recovery response when no correct security-question answer was supplied.",
+
+    "Multiple likely color values could be submitted against the same recovery flow without the user being locked out.",
+
+    "The value purple was eventually accepted as the correct security-question answer for tom.",
+
+    "The successful response returned lessonCompleted=true, demonstrating that a predictable security question combined with unrestricted attempts could allow the recovery control to be defeated.",
+
+    "The experiment did not brute-force a password; it demonstrated weakness in the verification mechanism used to authorize password recovery.",
+
+    "Testing then progressed to the creation of password-reset links for tom@webgoat-cloud.org.",
+
+    "The legitimate password-reset request was captured and sent to Burp Repeater before changing any parameters.",
+
+    "The request was physically sent to the WebGoat service at 10.10.30.128:8080 while the HTTP Host header was changed to 10.10.30.128:9090.",
+
+    "The manipulated request targeted /WebGoat/PasswordReset/ForgotPassword/create-password-reset-link.",
+
+    "WebGoat accepted the manipulated Host header and responded with lessonCompleted=true while reporting that a reset email had been sent to tom@webgoat-cloud.org.",
+
+    "The successful lesson response demonstrated that attacker-controlled Host information could influence the password-reset-link workflow in the intentionally vulnerable application.",
+
+    "WebWolf was reviewed for the simulated victim callback and reset token, but no corresponding callback containing Tom's reset token was observed in this deployment.",
+
+    "Because the reset-token callback was not observed, the experiment does not claim that Tom's password was changed through the poisoned reset link.",
+
+    "Security Onion recorded HTTP traffic generated during the password-recovery testing between Kali Linux at 10.10.1.50 and WebGoat at 10.10.30.128 on TCP port 8080.",
+
+    "Zeek generated HTTP and file telemetry associated with the authentication and password-reset activity.",
+
+    "No corresponding Suricata alert was observed in the captured evidence for the password-recovery tests.",
+
+    "The absence of a Suricata alert demonstrated that authentication-logic weaknesses can appear as ordinary application traffic at the network layer.",
+
+    "The password-recovery weaknesses demonstrated in this incident map broadly to CWE-640 — Weak Password Recovery Mechanism for Forgotten Password."
+  ],
+
+  lessons: [
+    "Password recovery is effectively an alternative authentication mechanism and should receive security controls comparable to the normal login process.",
+
+    "Strong passwords do not protect an account if the recovery process can be bypassed more easily than the primary authentication mechanism.",
+
+    "Knowledge-based security questions can provide weak assurance when their answers come from small or predictable answer spaces.",
+
+    "Security-question answers may also be discoverable through public information, social media or personal knowledge about the target.",
+
+    "Missing attempt limits significantly increase the risk of security-question based recovery because likely answers can be tested repeatedly.",
+
+    "The successful purple answer demonstrated how a small answer space can make repeated guessing practical when no lockout or rate limiting is enforced.",
+
+    "Burp Repeater made it possible to preserve the same request structure while changing only the security-question answer between attempts.",
+
+    "A failed HTTP request can still provide useful information when the application allows immediate repeated attempts without introducing additional verification.",
+
+    "Recovery systems should implement appropriate attempt limiting, monitoring and stronger verification methods rather than relying solely on static personal questions.",
+
+    "Password-reset links should use unique, unpredictable tokens that expire after a limited period and cannot be reused.",
+
+    "Applications should not rely on untrusted request headers when constructing security-sensitive URLs such as password-reset links.",
+
+    "The Host header is controlled by the HTTP client and should not automatically be trusted as the authoritative hostname for generating recovery links.",
+
+    "The Host-header experiment demonstrated how an otherwise legitimate reset workflow can become vulnerable when security-sensitive URL generation depends on attacker-controlled request data.",
+
+    "The actual Burp target and the HTTP Host header are different concepts. The request continued to reach WebGoat on port 8080 even while the supplied Host value referenced port 9090.",
+
+    "The WebWolf callback limitation demonstrated the importance of documenting what was actually proven rather than assuming every stage of a training exploit completed successfully.",
+
+    "A lesson reporting success is useful evidence of the intentionally vulnerable behaviour, but additional claims such as token theft or account takeover should only be made when those outcomes are directly observed.",
+
+    "Security Onion and Zeek can record the network activity surrounding authentication attacks even when they lack the application context needed to determine whether the recovery action was legitimate.",
+
+    "Authentication-logic abuse may not contain obvious exploit strings, which can limit the effectiveness of purely signature-based network detection.",
+
+    "Application-level logging should record password-reset attempts, failed recovery verification, unusual attempt frequency and security-sensitive changes to recovery workflows.",
+
+    "The incident maps to CWE-640 because the security weakness exists in the mechanism used to recover access to a forgotten account."
+  ],
+
+  body: [
+    "Incident 002.5 continues the web application security phase of the cybersecurity lab and focuses on authentication weaknesses within account-recovery and password-reset functionality using OWASP WebGoat.",
+
+    "The objective of the experiment was to determine whether password-recovery functionality could provide a weaker path into an account than the application's normal authentication process. Account recovery is security-sensitive because successfully satisfying the recovery mechanism may ultimately provide the same access as knowing the user's password.",
+
+    "Testing began by establishing the normal password-reset workflow. A reset request was initiated through WebGoat and captured using Burp Proxy. The request was then transferred to Burp Repeater so that the application response could be reproduced and individual recovery parameters could later be changed in isolation.",
+
+    "WebWolf was also configured and accessed on TCP port 9090. WebWolf acts as the controlled attacker-side companion application used by several WebGoat lessons for receiving emails, files and callback requests.",
+
+    "The first authentication weakness investigated involved security questions. WebGoat presented a password-recovery flow where a user could recover access by supplying a username and answering a knowledge-based security question.",
+
+    "The lesson stated that no lockout mechanism existed for the Forgot Password workflow. This created an important weakness because an attacker could submit multiple possible answers without the recovery process becoming unavailable or requiring additional verification.",
+
+    "The controlled target selected for the test was the user tom. The recovery question asked for the user's favorite color.",
+
+    "Burp captured the password-recovery request as a POST request to /WebGoat/PasswordReset/questions. The request contained both the username and the securityQuestion parameter.",
+
+    "A baseline request with an incorrect or empty answer produced an HTTP 200 response indicating that the supplied solution was not correct. The application immediately allowed another recovery attempt.",
+
+    "Several likely color values were tested manually through Burp Repeater. No account lockout, progressive delay or additional challenge was observed between attempts.",
+
+    "The answer purple was eventually accepted. WebGoat returned lessonCompleted=true and confirmed that the assignment had been successfully completed.",
+
+    "This demonstrated that the password-recovery control relied on a predictable knowledge-based answer while also allowing unrestricted attempts. The weakness was therefore not a compromised password itself, but a weak alternative mechanism for verifying the identity of a user attempting account recovery.",
+
+    "The experiment then progressed to password-reset link generation. The lesson explained that reset links should contain unique random tokens, should be usable only once and should remain valid only for a limited period.",
+
+    "A password-reset request was generated for tom@webgoat-cloud.org and captured in Burp. The request targeted /WebGoat/PasswordReset/ForgotPassword/create-password-reset-link.",
+
+    "The baseline request was transferred to Burp Repeater. The actual Burp target remained the WebGoat service at 10.10.30.128 on TCP port 8080.",
+
+    "Only the HTTP Host header was changed, from the legitimate WebGoat host value on port 8080 to 10.10.30.128:9090, where WebWolf was listening.",
+
+    "This separation was important to the experiment. The request itself continued to reach WebGoat for processing, while the application received attacker-controlled hostname information through the Host header.",
+
+    "WebGoat processed the manipulated request successfully and returned HTTP 200 with lessonCompleted=true. The application also reported that an email had been sent to tom@webgoat-cloud.org.",
+
+    "The successful lesson response demonstrated the password-reset-link weakness within the intentionally vulnerable application. WebGoat accepted attacker-controlled Host information during a security-sensitive recovery operation.",
+
+    "WebWolf Incoming Requests was then monitored for the simulated victim callback that would contain the password-reset token. No corresponding callback containing Tom's reset token was observed in this particular deployment.",
+
+    "The missing callback was retained as an experiment limitation rather than being interpreted as a successful token capture. The documented finding therefore stops at the point supported by the evidence: WebGoat accepted the manipulated Host header and marked the reset-link assignment as completed.",
+
+    "The experiment does not claim that Tom's password was changed or that the account was fully taken over through the reset link because the reset token required for those additional stages was not captured.",
+
+    "The authentication activity was then investigated from the defensive side using Security Onion. Traffic from Kali Linux at 10.10.1.50 to the WebGoat server at 10.10.30.128 on TCP port 8080 was visible during the password-recovery testing.",
+
+    "Zeek produced HTTP and file-related telemetry associated with the requests. This provided network-level evidence that the account-recovery interactions occurred even though the security issue itself depended on application logic.",
+
+    "No corresponding Suricata alert was observed in the captured evidence. This was consistent with the nature of the experiment because the requests largely consisted of valid HTTP operations against legitimate application endpoints rather than obvious exploit payloads.",
+
+    "The defensive investigation reinforced the difference between visibility and security context. Zeek could show that a password-reset request occurred, but determining whether repeated recovery attempts or a manipulated Host value represented abuse requires additional application and identity context.",
+
+    "From a defensive perspective, password-recovery telemetry should therefore include failed recovery attempts, frequency of attempts per user and source, password-reset requests, token generation, token consumption and changes to account credentials.",
+
+    "The password-recovery weaknesses demonstrated during Incident 002.5 map broadly to CWE-640 — Weak Password Recovery Mechanism for Forgotten Password. The core problem is that the alternative mechanism used to restore account access can provide weaker identity verification than the application's primary authentication process.",
+
+    "Appropriate remediation includes replacing weak security questions with stronger account-recovery mechanisms, applying rate limiting and attempt controls, monitoring repeated failed recovery attempts, generating cryptographically unpredictable reset tokens, expiring and invalidating tokens correctly, and constructing reset URLs from trusted server-side configuration rather than untrusted request headers.",
+
+    "Incident 002.5 demonstrated two distinct authentication weaknesses within one recovery workflow: predictable security-question verification with unrestricted attempts, and password-reset link generation influenced by an attacker-controlled Host header.",
+
+    "Together, the findings demonstrate why account recovery should be considered part of the authentication attack surface rather than an auxiliary feature. A secure login process can still be undermined when the mechanism used to recover forgotten credentials applies weaker security controls."
+  ],
+
+  images: [
+    {
+      src: "assets/images/incident-002-05-password-reset-baseline.png",
+      alt: "Burp Repeater showing the normal WebGoat password reset request and response",
+      caption:
+        "Burp Repeater showing the baseline WebGoat password-reset request and response before manipulating any authentication-recovery parameters.",
+      afterParagraph: 4
+    },
+
+    {
+      src: "assets/images/incident-002-05-security-question-burp-baseline.png",
+      alt: "Burp Repeater showing an unsuccessful WebGoat security question recovery attempt",
+      caption:
+        "Baseline security-question recovery request for user tom. An incorrect answer is rejected, but the application immediately permits additional attempts.",
+      afterParagraph: 9
+    },
+
+    {
+      src: "assets/images/incident-002-05-security-question-bypass.png",
+      alt: "Burp Repeater showing successful security question password recovery",
+      caption:
+        "After several unrestricted attempts, the value purple is accepted as tom's security-question answer and WebGoat returns lessonCompleted=true, demonstrating the weakness of predictable recovery questions without attempt limiting.",
+      afterParagraph: 12
+    },
+
+    {
+      src: "assets/images/incident-002-05-reset-link-host-header-poisoning.png",
+      alt: "Burp Repeater showing manipulated Host header during WebGoat password reset",
+      caption:
+        "The password-reset request continues to target WebGoat on TCP port 8080 while the supplied Host header is changed to the WebWolf service on port 9090. WebGoat accepts the manipulated request and marks the reset-link assignment as completed.",
+      afterParagraph: 19
+    },
+
+    {
+      src: "assets/images/incident-002-05-security-onion.png",
+      alt: "Security Onion Zeek telemetry generated during WebGoat password recovery testing",
+      caption:
+        "Security Onion showing Zeek HTTP and file telemetry between Kali Linux at 10.10.1.50 and WebGoat at 10.10.30.128:8080 during the authentication and password-recovery experiment. No corresponding Suricata alert was observed.",
+      afterParagraph: 25
+    }
+  ]
+},
     
     
     {
