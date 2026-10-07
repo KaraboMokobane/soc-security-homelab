@@ -308,7 +308,7 @@ soc-security-homelab/
 | Area                        | Technologies                                |
 | --------------------------- | ------------------------------------------- |
 | Virtualization              | Proxmox VE                                  |
-| Firewall & Routing          | pfSense                                     |
+| Firewall & Routing          | pfSense & OPNSense                                     |
 | SIEM / XDR                  | Wazuh                                       |
 | Network Security Monitoring | Security Onion                              |
 | Adversary Emulation         | MITRE Caldera                               |
