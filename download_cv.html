@@ -1,1 +1,51 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050807">
+  <meta name="description" content="Download Karabo Mokobane's professional CV.">
+
+  <title>Download CV | Karabo Cyberlab</title>
+
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+  <main style="max-width: 600px; margin: 100px auto; padding: 24px; text-align: center;">
+
+    <h1>Download My CV</h1>
+
+    <p>
+      Explore my professional experience, technical skills,
+      qualifications and cybersecurity projects.
+    </p>
+
+    <a
+      id="cv-download"
+      href="assets/docs/Karabo-Mokobane-CV.pdf"
+      download="Karabo-Mokobane-CV.pdf"
+      class="cv-download-btn"
+    >
+      &gt; Download CV
+    </a>
+
+    <p style="margin-top: 24px;">
+      <a href="index.html">Return to Portfolio</a>
+    </p>
+
+  </main>
+
+  <script>
+    window.addEventListener("load", () => {
+      const downloadLink = document.getElementById("cv-download");
+
+      if (downloadLink) {
+        downloadLink.click();
+      }
+    });
+  </script>
+</body>
+</html>
+
