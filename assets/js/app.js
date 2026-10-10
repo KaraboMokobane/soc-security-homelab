@@ -7,14 +7,69 @@
   if (!data || !C || !root) return;
 
   const featured = data.entries.filter((entry) => entry.featured);
-  const renderHome = () => C.shell("home", `
-    <section class="hero section"><div class="container hero-grid"><div class="hero-copy">
-      ${C.promptLine(data.home.command)}${C.title(data.home.title, "hero-title")}<h2 class="hero-accent reveal">${C.escapeHTML(data.home.accentTitle)}</h2>
-      <p class="hero-description reveal">${C.escapeHTML(data.home.description)}</p>
-      <div class="button-row reveal">${C.button({ ...data.home.primaryAction })}${C.button({ ...data.home.secondaryAction, variant: "secondary" })}</div>
-    </div>${C.terminal()}</div></section>
-    <section class="stats"><div class="container stats-grid">${data.statistics.map((item) => `<div class="stat reveal"><strong>${C.escapeHTML(item.value)}</strong><span>${C.escapeHTML(item.label)}</span></div>`).join("")}</div></section>
-    <section class="section"><div class="container"><div class="section-heading reveal"><div><p class="kicker">[LATEST LOGS]</p><h2>Recent Build Logs</h2></div><a href="logs.html">view archive ${C.icon("arrow")}</a></div><div class="card-grid">${featured.map(C.entryCard).join("")}</div></div></section>`);
+
+const renderHome = () => C.shell("home", `
+  <section class="hero section">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+
+        ${C.promptLine(data.home.command)}
+        ${C.title(data.home.title, "hero-title")}
+
+        <h2 class="hero-accent reveal">
+          ${C.escapeHTML(data.home.accentTitle)}
+        </h2>
+
+        <p class="hero-description reveal">
+          ${C.escapeHTML(data.home.description)}
+        </p>
+
+        <div class="button-row reveal">
+          ${C.button({ ...data.home.primaryAction })}
+          ${C.button({ ...data.home.secondaryAction, variant: "secondary" })}
+
+          <a href="download_cv.html" class="btn btn-secondary cv-download-btn">
+            ${C.icon("download")}
+            <span>Download CV</span>
+          </a>
+        </div>
+
+      </div>
+      ${C.terminal()}
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="container stats-grid">
+      ${data.statistics.map((item) => `
+        <div class="stat reveal">
+          <strong>${C.escapeHTML(item.value)}</strong>
+          <span>${C.escapeHTML(item.label)}</span>
+        </div>
+      `).join("")}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-heading reveal">
+        <div>
+          <p class="kicker">[LATEST LOGS]</p>
+          <h2>Recent Build Logs</h2>
+        </div>
+
+        <a href="logs.html">
+          view archive ${C.icon("arrow")}
+        </a>
+      </div>
+
+      <div class="card-grid">
+        ${featured.map(C.entryCard).join("")}
+      </div>
+    </div>
+  </section>
+`);
+
 
 const renderLogs = () => {
   const categories = ["All", ...new Set(data.entries.map((entry) => entry.category))];
