@@ -879,23 +879,23 @@ main {
   white-space: pre;
 }
 
+
 /* CV download button */
 .cv-download-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  text-decoration: none;
+  gap: 0.6rem;
+  white-space: nowrap;
 }
 
-.cv-download-btn svg {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
+.cv-download-btn:hover {
+  background: var(--green);
+  color: var(--bg);
+  box-shadow: 0 0 25px rgba(55, 255, 148, 0.20);
 }
 
-@media (max-width: 600px) {
-  .button-row {
-    flex-wrap: wrap;
-  }
+.cv-download-btn:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 4px;
 }
