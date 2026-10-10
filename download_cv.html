@@ -22,14 +22,22 @@
       qualifications and cybersecurity projects.
     </p>
 
-    <a
-      id="cv-download"
-      href="assets/docs/Karabo-Mokobane-CV.pdf"
-      download="Karabo-Mokobane-CV.pdf"
-      class="cv-download-btn"
-    >
-      &gt; Download CV
-    </a>
+<div class="button-row reveal">
+  ${C.button({ ...data.home.primaryAction })}
+
+  ${C.button({
+    ...data.home.secondaryAction,
+    variant: "secondary"
+  })}
+
+  <a
+    href="assets/docs/Karabo-Mokobane-CV.pdf"
+    download="Karabo-Mokobane-CV.pdf"
+    class="button button--secondary cv-download-btn"
+  >
+    <span>↓ Download CV</span>
+  </a>
+</div>
 
     <p style="margin-top: 24px;">
       <a href="index.html">Return to Portfolio</a>
