@@ -28,9 +28,13 @@ const renderHome = () => C.shell("home", `
           ${C.button({ ...data.home.primaryAction })}
           ${C.button({ ...data.home.secondaryAction, variant: "secondary" })}
 
-          <a href="download_cv.html" class="btn btn-secondary cv-download-btn">
-            ${C.icon("download")}
+          <a
+            href="assets/docs/Karabo-Mokobane-CV.pdf"
+            download="Karabo-Mokobane-CV.pdf"
+            class="button button--secondary cv-download-btn"
+          >
             <span>Download CV</span>
+            <span aria-hidden="true">↓</span>
           </a>
         </div>
 
