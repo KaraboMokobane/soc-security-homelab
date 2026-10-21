@@ -50,7 +50,7 @@ about: {
     // ["homelab", "Dual-Node Proxmox Lab"],
     ["toolkit", "pfSense • OPNsense • Wazuh • Security Onion • Kali Linux • Nessus • Burp Suite • MITRE ATT&CK • Docker • Metasploitable2"],
     ["approach", "Build • Test • Break • Secure • Document"],
-    // ["status", "Continuously Learning"]
+    ["status", "Continuously Learning"]
   ],
 
   introduction: `Modern infrastructure and security engineering rarely have a single "correct" solution. Every environment is different, and every challenge can be approached from multiple angles. The best way to learn is by building, testing, breaking things, and understanding why they work.
