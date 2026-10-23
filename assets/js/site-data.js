@@ -1278,7 +1278,79 @@ about: {
     }
   ]
 },
-    
+    {
+  id: "php2shell-critical-rce-research",
+  category: "Cybersecurity Research",
+  status: "documented",
+  featured: true,
+
+  title: "PHP2Shell — Researching a Critical PHP Remote Code Execution Risk",
+  date: "2026-10-23",
+
+  tags: [
+    "PHP",
+    "PHP2Shell",
+    "CVE-2026-109618",
+    "CVE-2026-109619",
+    "Remote Code Execution",
+    "RCE",
+    "Web Security",
+    "WordPress Security",
+    "Vulnerability Management",
+    "Patch Management",
+    "Website Development"
+  ],
+
+  tools: [
+    "PHP Security Advisories",
+    "Web Hosting Control Panel",
+    "WordPress Site Health",
+    "PHP Version Checks",
+    "Website Backups",
+    "Server Logs"
+  ],
+
+  summary:
+    "Researched the PHP2Shell vulnerabilities, CVE-2026-109618 and CVE-2026-109619, from the perspective of a website development provider responsible for client websites. The disclosure showed how a vulnerability in a widely used web technology can quickly become a global operational and security concern.",
+
+  findings: [
+    "PHP2Shell refers to two critical PHP vulnerabilities that can enable unauthenticated remote code execution on affected web servers.",
+    "The vulnerabilities affect the PHP runtime, meaning that updating WordPress core, themes or plugins alone would not resolve the underlying exposure.",
+    "Websites using PHP-FPM, Apache mod_php, php-cgi, LiteSpeed and other web-facing PHP configurations may be affected.",
+    "The official PHP fixes were released in PHP 8.2.35, 8.3.36, 8.4.27 and 8.5.12.",
+    "Unsupported PHP versions require a migration to a supported release because they may not receive an official security fix.",
+    "The public response was striking: some government and major website operators temporarily restricted or took services offline while applying emergency patches.",
+    "For a website provider, the immediate priority is to identify affected client websites, verify their PHP versions, confirm backup availability, plan compatibility testing and coordinate an urgent update with the hosting provider."
+  ],
+
+  lessons: [
+    "A vulnerability in a shared technology layer such as PHP can affect many unrelated websites at the same time.",
+    "Website security is not limited to WordPress plugins, passwords and themes; the hosting environment and PHP runtime are equally important.",
+    "Critical vulnerability disclosures require calm, structured incident response rather than rushed changes that may create availability problems.",
+    "Reliable backups and a tested rollback plan are essential before upgrading PHP on a live client website.",
+    "Different website owners and managers respond to risk differently: some prioritise immediate patching, while others need clear communication about potential downtime, compatibility and business impact.",
+    "As a new cybersecurity practitioner, it was valuable to see how technical risk, client communication, hosting providers and service availability all intersect during a real-world security event.",
+    "The event felt almost apocalyptic across the IT world because organisations had to rapidly decide whether to patch immediately, temporarily restrict services or risk leaving public-facing websites exposed."
+  ],
+
+  body: [
+    "As a website development provider responsible for client websites, I researched the PHP2Shell vulnerabilities, CVE-2026-109618 and CVE-2026-109619, to understand the practical impact on PHP-powered websites and the steps required to protect them.",
+
+    "The vulnerabilities were particularly important because they affect PHP itself rather than a single WordPress plugin, theme or website. An affected server could potentially allow an unauthenticated attacker to execute malicious code, creating risks such as data exposure, website defacement, malware deployment and wider server compromise.",
+
+    "Watching the response unfold felt almost apocalyptic in the IT world. Governments and major organisations temporarily took websites and services offline while preparing emergency updates. It showed how quickly one critical vulnerability in a widely used technology can affect the availability of online services globally.",
+
+    "From a client website perspective, the research reinforced that updating WordPress alone is not enough when the issue exists in the PHP runtime. The correct response includes verifying the active PHP version, confirming whether the hosting provider has applied the security update, creating reliable backups, testing website compatibility and reviewing important functions after the upgrade.",
+
+    "It was also interesting to observe how differently website owners and managers reacted. Some focused immediately on security and patching, while others were understandably concerned about whether an update could affect website availability, plugins, forms, payments or other business-critical functions.",
+
+    "This research connected website development with cybersecurity incident response. It highlighted the importance of communicating technical risks in plain language, planning changes carefully and balancing urgent remediation with continuity for the people who depend on the website.",
+
+    "The official PHP security releases addressed the vulnerabilities in PHP 8.2.35, 8.3.36, 8.4.27 and 8.5.12. The event remains a strong reminder that patch management, supported software versions, backups and hosting-provider communication are essential parts of website security."
+  ],
+
+  images: []
+},
     
     {
       id: "AWS", category: "AWS", status: "documented", featured: true,
