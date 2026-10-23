@@ -1351,7 +1351,7 @@ about: {
 
 images: [
   {
-    src: "assets/images/php-security.jpg",
+    src: "assets/images/php-security.jg",
     alt: "Critical web-server security alert and emergency PHP patching",
     caption:
       "A critical PHP vulnerability can affect the technology layer behind many unrelated websites, making rapid patching, testing and clear communication essential.",
