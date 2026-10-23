@@ -1349,7 +1349,15 @@ about: {
     "The official PHP security releases addressed the vulnerabilities in PHP 8.2.35, 8.3.36, 8.4.27 and 8.5.12. The event remains a strong reminder that patch management, supported software versions, backups and hosting-provider communication are essential parts of website security."
   ],
 
-  images: []
+images: [
+  {
+    src: "assets/images/php-security.jpeg",
+    alt: "Critical web-server security alert and emergency PHP patching",
+    caption:
+      "A critical PHP vulnerability can affect the technology layer behind many unrelated websites, making rapid patching, testing and clear communication essential.",
+    afterParagraph: 3
+  }
+]
 },
     
     {
